@@ -1,0 +1,73 @@
+<%- include('../partials/header') %>
+
+<section class="page-header">
+  <h1>Eventos</h1>
+  <p>Descubra os próximos eventos disponíveis no EventHub.</p>
+</section>
+
+<% if (usuario && usuario.tipo === 'organizador') { %>
+  <div style="margin-bottom: 25px;">
+    <a href="/eventos/novo" class="btn btn-primary">
+      Criar novo evento
+    </a>
+  </div>
+<% } %>
+
+<% if (eventos && eventos.length > 0) { %>
+
+  <div class="eventos-grid">
+
+    <% eventos.forEach((evento) => { %>
+
+      <article class="evento-card">
+
+        <h2><%= evento.titulo %></h2>
+
+        <p>
+          <strong>Data:</strong>
+          <%= new Date(evento.data).toLocaleDateString('pt-BR') %>
+        </p>
+
+        <p>
+          <strong>Local:</strong>
+          <%= evento.local %>
+        </p>
+
+        <p>
+          <strong>Organizador:</strong>
+          <%= evento.organizador_nome %>
+        </p>
+
+        <a
+          href="/eventos/<%= evento.id %>"
+          class="btn btn-secondary"
+          style="margin-top: 12px;"
+        >
+          Ver detalhes
+        </a>
+
+      </article>
+
+    <% }) %>
+
+  </div>
+
+<% } else { %>
+
+  <div class="empty-state">
+    <h2>Nenhum evento disponível</h2>
+
+    <p>
+      Ainda não existem eventos cadastrados no EventHub.
+    </p>
+
+    <% if (usuario && usuario.tipo === 'organizador') { %>
+      <a href="/eventos/novo" class="btn btn-primary">
+        Criar primeiro evento
+      </a>
+    <% } %>
+  </div>
+
+<% } %>
+
+<%- include('../partials/footer') %>

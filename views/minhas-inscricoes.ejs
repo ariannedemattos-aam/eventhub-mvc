@@ -1,0 +1,78 @@
+<%- include('partials/header') %>
+
+<section class="page-header">
+  <h1>Minhas inscrições</h1>
+  <p>Veja os eventos em que você já confirmou participação.</p>
+</section>
+
+<% if (inscricoes && inscricoes.length > 0) { %>
+
+  <div class="eventos-grid">
+
+    <% inscricoes.forEach((inscricao) => { %>
+
+      <article class="evento-card">
+
+        <h2><%= inscricao.titulo %></h2>
+
+        <p>
+          <strong>Data:</strong>
+          <%= new Date(inscricao.data).toLocaleDateString('pt-BR') %>
+        </p>
+
+        <p>
+          <strong>Local:</strong>
+          <%= inscricao.local %>
+        </p>
+
+        <p>
+          <strong>Organizador:</strong>
+          <%= inscricao.organizador_nome %>
+        </p>
+
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px;">
+
+          <a
+            href="/eventos/<%= inscricao.evento_id %>"
+            class="btn btn-secondary"
+          >
+            Ver evento
+          </a>
+
+          <form
+            action="/inscricoes/<%= inscricao.inscricao_id %>/cancelar"
+            method="POST"
+            data-confirmacao="Tem certeza que deseja cancelar esta inscrição?"
+          >
+            <button type="submit" class="btn btn-danger">
+              Cancelar inscrição
+            </button>
+          </form>
+
+        </div>
+
+      </article>
+
+    <% }) %>
+
+  </div>
+
+<% } else { %>
+
+  <div class="empty-state">
+
+    <h2>Você ainda não possui inscrições</h2>
+
+    <p>
+      Explore os eventos disponíveis e escolha algum para participar.
+    </p>
+
+    <a href="/eventos" class="btn btn-primary">
+      Explorar eventos
+    </a>
+
+  </div>
+
+<% } %>
+
+<%- include('partials/footer') %>

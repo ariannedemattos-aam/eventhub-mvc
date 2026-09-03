@@ -1,0 +1,19 @@
+<%- include('partials/header') %>
+
+<div class="empty-state">
+
+  <h1>Ops!</h1>
+
+  <h2><%= titulo || 'Algo deu errado' %></h2>
+
+  <p>
+    <%= mensagem || 'Não foi possível concluir esta ação.' %>
+  </p>
+
+  <a href="/eventos" class="btn btn-primary">
+    Voltar para os eventos
+  </a>
+
+</div>
+
+<%- include('partials/footer') %>

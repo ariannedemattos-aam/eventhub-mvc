@@ -1,0 +1,96 @@
+<%- include('../partials/header') %>
+
+<section class="page-header">
+  <h1>Criar evento</h1>
+
+  <p>
+    Preencha as informações para publicar um novo evento.
+  </p>
+</section>
+
+<div class="form-container">
+
+  <% if (erros && erros.length > 0) { %>
+
+    <div class="alert alert-error">
+
+      <% erros.forEach((erro) => { %>
+
+        <p><%= erro.msg %></p>
+
+      <% }) %>
+
+    </div>
+
+  <% } %>
+
+  <form action="/eventos" method="POST">
+
+    <div class="form-group">
+      <label for="titulo">Título</label>
+
+      <input
+        type="text"
+        id="titulo"
+        name="titulo"
+        class="form-control"
+        value="<%= dados && dados.titulo ? dados.titulo : '' %>"
+        required
+      >
+    </div>
+
+    <div class="form-group">
+      <label for="descricao">Descrição</label>
+
+      <textarea
+        id="descricao"
+        name="descricao"
+        class="form-control"
+        required
+      ><%= dados && dados.descricao ? dados.descricao : '' %></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="data">Data</label>
+
+      <input
+        type="date"
+        id="data"
+        name="data"
+        class="form-control"
+        min="<%= new Date().toISOString().split('T')[0] %>"
+        value="<%= dados && dados.data ? dados.data : '' %>"
+        required
+      >
+    </div>
+
+    <div class="form-group">
+      <label for="local">Local</label>
+
+      <input
+        type="text"
+        id="local"
+        name="local"
+        class="form-control"
+        value="<%= dados && dados.local ? dados.local : '' %>"
+        required
+      >
+    </div>
+
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+
+      <button type="submit" class="btn btn-primary">
+        Criar evento
+      </button>
+
+      <a href="/eventos" class="btn btn-secondary">
+        Cancelar
+      </a>
+
+    </div>
+
+  </form>
+
+</div>
+
+<%- include('../partials/footer') %>
