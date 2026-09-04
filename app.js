@@ -15,6 +15,11 @@ const PORT = process.env.PORT || 3000;
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+// Necessário no Render para cookies seguros funcionarem atrás do proxy HTTPS
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -25,6 +30,8 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    proxy: process.env.NODE_ENV === 'production',
+
     cookie: {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -66,5 +73,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`EventHub rodando em http://localhost:${PORT}`);
+  console.log(`EventHub rodando na porta ${PORT}`);
 });
