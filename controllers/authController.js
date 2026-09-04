@@ -1,35 +1,26 @@
 const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
+
 const Usuario = require('../models/Usuario');
 
 /**
  * Exibe a página de login.
- *
- * @async
- * @param {import('express').Request} req - Objeto da requisição HTTP.
- * @param {import('express').Response} res - Objeto da resposta HTTP.
- * @returns {Promise<void>}
  */
-exports.exibirLogin = async (req, res) => {
+exports.exibirLogin = async (req, res, next) => {
   try {
     res.render('auth/login', {
       titulo: 'Entrar',
       erro: null
     });
   } catch (error) {
-    throw error;
+    next(error);
   }
 };
 
 /**
- * Exibe a página de cadastro de usuário.
- *
- * @async
- * @param {import('express').Request} req - Objeto da requisição HTTP.
- * @param {import('express').Response} res - Objeto da resposta HTTP.
- * @returns {Promise<void>}
+ * Exibe a página de cadastro.
  */
-exports.exibirCadastro = async (req, res) => {
+exports.exibirCadastro = async (req, res, next) => {
   try {
     res.render('auth/cadastro', {
       titulo: 'Criar conta',
@@ -37,21 +28,12 @@ exports.exibirCadastro = async (req, res) => {
       dados: {}
     });
   } catch (error) {
-    throw error;
+    next(error);
   }
 };
 
 /**
- * Cadastra um novo usuário no sistema.
- *
- * Valida os dados recebidos, verifica se o e-mail já está cadastrado,
- * gera o hash da senha e salva o novo usuário no banco de dados.
- *
- * @async
- * @param {import('express').Request} req - Requisição contendo os dados do cadastro.
- * @param {import('express').Response} res - Objeto da resposta HTTP.
- * @param {import('express').NextFunction} next - Função para encaminhar erros ao middleware global.
- * @returns {Promise<void>}
+ * Cadastra um novo usuário.
  */
 exports.cadastrar = async (req, res, next) => {
   try {
@@ -65,45 +47,54 @@ exports.cadastrar = async (req, res, next) => {
       });
     }
 
-    const { nome, email, senha, tipo } = req.body;
+    const {
+      nome,
+      email,
+      senha,
+      tipo
+    } = req.body;
 
-    const usuarioExistente = await Usuario.buscarPorEmail(email);
+    const emailNormalizado = email
+      .trim()
+      .toLowerCase();
+
+    const usuarioExistente =
+      await Usuario.buscarPorEmail(emailNormalizado);
 
     if (usuarioExistente) {
       return res.status(409).render('auth/cadastro', {
         titulo: 'Criar conta',
-        erros: [{ msg: 'Já existe uma conta cadastrada com este e-mail.' }],
-        dados: req.body
+        erros: [
+          {
+            msg: 'Já existe uma conta cadastrada com este e-mail.'
+          }
+        ],
+        dados: {
+          nome,
+          email: emailNormalizado,
+          tipo
+        }
       });
     }
 
     const senhaHash = await bcrypt.hash(senha, 12);
 
     await Usuario.criar({
-      nome,
-      email,
+      nome: nome.trim(),
+      email: emailNormalizado,
       senha: senhaHash,
       tipo
     });
 
-    res.redirect('/login');
+    return res.redirect('/login');
+
   } catch (error) {
     next(error);
   }
 };
 
 /**
- * Autentica um usuário e cria sua sessão.
- *
- * Verifica os dados enviados, busca o usuário pelo e-mail,
- * compara a senha informada com o hash armazenado e registra
- * os dados básicos do usuário na sessão.
- *
- * @async
- * @param {import('express').Request} req - Requisição contendo e-mail e senha.
- * @param {import('express').Response} res - Objeto da resposta HTTP.
- * @param {import('express').NextFunction} next - Função para encaminhar erros ao middleware global.
- * @returns {Promise<void>}
+ * Autentica o usuário e cria a sessão.
  */
 exports.login = async (req, res, next) => {
   try {
@@ -116,9 +107,14 @@ exports.login = async (req, res, next) => {
       });
     }
 
-    const { email, senha } = req.body;
+    const email = req.body.email
+      .trim()
+      .toLowerCase();
 
-    const usuario = await Usuario.buscarPorEmail(email);
+    const senha = req.body.senha;
+
+    const usuario =
+      await Usuario.buscarPorEmail(email);
 
     if (!usuario) {
       return res.status(401).render('auth/login', {
@@ -127,7 +123,11 @@ exports.login = async (req, res, next) => {
       });
     }
 
-    const senhaValida = await bcrypt.compare(senha, usuario.senha);
+    const senhaValida =
+      await bcrypt.compare(
+        senha,
+        usuario.senha
+      );
 
     if (!senhaValida) {
       return res.status(401).render('auth/login', {
@@ -143,27 +143,26 @@ exports.login = async (req, res, next) => {
       tipo: usuario.tipo
     };
 
-    if (usuario.tipo === 'organizador') {
-      return res.redirect('/eventos');
-    }
+    /*
+     * IMPORTANTE:
+     * força a sessão a ser salva antes do redirect.
+     * Isso evita perder a autenticação no Render.
+     */
+    req.session.save((error) => {
+      if (error) {
+        return next(error);
+      }
 
-    res.redirect('/eventos');
+      return res.redirect('/eventos');
+    });
+
   } catch (error) {
     next(error);
   }
 };
 
 /**
- * Encerra a sessão do usuário autenticado.
- *
- * Remove a sessão atual, limpa o cookie de sessão
- * e redireciona o usuário para a página de login.
- *
- * @async
- * @param {import('express').Request} req - Objeto da requisição HTTP.
- * @param {import('express').Response} res - Objeto da resposta HTTP.
- * @param {import('express').NextFunction} next - Função para encaminhar erros ao middleware global.
- * @returns {Promise<void>}
+ * Encerra a sessão.
  */
 exports.logout = async (req, res, next) => {
   try {
@@ -172,9 +171,15 @@ exports.logout = async (req, res, next) => {
         return next(error);
       }
 
-      res.clearCookie('connect.sid');
-      res.redirect('/login');
+      res.clearCookie('connect.sid', {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production'
+      });
+
+      return res.redirect('/login');
     });
+
   } catch (error) {
     next(error);
   }

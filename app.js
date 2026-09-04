@@ -12,59 +12,112 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
-
-// Necessário no Render para cookies seguros funcionarem atrás do proxy HTTPS
+/*
+ * Render usa proxy reverso HTTPS.
+ * Sem isso, cookies secure podem não funcionar corretamente.
+ */
 if (process.env.NODE_ENV === 'production') {
   app.set('trust proxy', 1);
 }
 
-app.use(express.urlencoded({ extended: true }));
+/*
+ * Views
+ */
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+/*
+ * Parsers
+ */
+app.use(
+  express.urlencoded({
+    extended: true
+  })
+);
+
 app.use(express.json());
 
-app.use(express.static(path.join(__dirname, 'public')));
+/*
+ * Arquivos públicos
+ */
+app.use(
+  express.static(
+    path.join(__dirname, 'public')
+  )
+);
 
+/*
+ * Sessão
+ */
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
+
     resave: false,
     saveUninitialized: false,
-    proxy: process.env.NODE_ENV === 'production',
 
     cookie: {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+
+      secure:
+        process.env.NODE_ENV === 'production',
+
       sameSite: 'lax',
-      maxAge: 1000 * 60 * 60 * 2
+
+      maxAge:
+        1000 * 60 * 60 * 2
     }
   })
 );
 
+/*
+ * Disponibiliza o usuário logado
+ * para todas as páginas EJS.
+ */
 app.use((req, res, next) => {
-  res.locals.usuario = req.session.usuario || null;
+  res.locals.usuario =
+    req.session.usuario || null;
+
   next();
 });
 
+/*
+ * Página inicial
+ */
 app.get('/', (req, res) => {
   res.redirect('/eventos');
 });
 
+/*
+ * Rotas
+ */
 app.use(authRoutes);
-app.use('/eventos', eventoRoutes);
+
+app.use(
+  '/eventos',
+  eventoRoutes
+);
+
 app.use(inscricaoRoutes);
 
+/*
+ * 404
+ */
 app.use((req, res) => {
   res.status(404).render('404', {
     titulo: 'Página não encontrada'
   });
 });
 
+/*
+ * Tratamento global de erros
+ */
 app.use((err, req, res, next) => {
   console.error(err);
 
   res.status(500).render('erro', {
     titulo: 'Erro interno',
+
     mensagem:
       process.env.NODE_ENV === 'production'
         ? 'Ocorreu um erro interno no servidor.'
@@ -72,6 +125,11 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`EventHub rodando na porta ${PORT}`);
+/*
+ * Servidor
+ */
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(
+    `EventHub rodando na porta ${PORT}`
+  );
 });
