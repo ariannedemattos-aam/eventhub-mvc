@@ -3,8 +3,7 @@ const express = require('express');
 const inscricaoController = require('../controllers/inscricaoController');
 
 const {
-  autenticado,
-  participante
+  autenticado
 } = require('../middlewares/authMiddleware');
 
 const {
@@ -16,14 +15,12 @@ const router = express.Router();
 router.get(
   '/minhas-inscricoes',
   autenticado,
-  participante,
   inscricaoController.minhasInscricoes
 );
 
 router.post(
   '/eventos/:id/inscrever',
   autenticado,
-  participante,
   validarId,
   inscricaoController.inscrever
 );
@@ -31,7 +28,6 @@ router.post(
 router.post(
   '/inscricoes/:id/cancelar',
   autenticado,
-  participante,
   validarId,
   inscricaoController.cancelar
 );

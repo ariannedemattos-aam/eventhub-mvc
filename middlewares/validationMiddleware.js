@@ -20,11 +20,7 @@ exports.validarCadastro = [
     .notEmpty()
     .withMessage('Informe uma senha.')
     .isLength({ min: 6 })
-    .withMessage('A senha deve ter pelo menos 6 caracteres.'),
-
-  body('tipo')
-    .isIn(['organizador', 'participante'])
-    .withMessage('Selecione um tipo de usuário válido.')
+    .withMessage('A senha deve ter pelo menos 6 caracteres.')
 ];
 
 exports.validarLogin = [
@@ -79,7 +75,46 @@ exports.validarEvento = [
     .notEmpty()
     .withMessage('Informe o local do evento.')
     .isLength({ min: 2, max: 150 })
-    .withMessage('O local deve ter entre 2 e 150 caracteres.')
+    .withMessage('O local deve ter entre 2 e 150 caracteres.'),
+
+  body('categoria')
+    .optional({ checkFalsy: true })
+    .trim()
+    .isLength({ max: 50 })
+    .withMessage('A categoria deve ter no máximo 50 caracteres.'),
+
+  body('imagem_url')
+    .optional({ checkFalsy: true })
+    .trim()
+    .isURL()
+    .withMessage('Informe uma URL de imagem válida.'),
+
+  body('tipo_ingresso')
+    .optional({ checkFalsy: true })
+    .isIn(['gratuito', 'pago'])
+    .withMessage('Selecione um tipo de ingresso válido.'),
+
+  body('preco')
+    .optional({ checkFalsy: true })
+    .isFloat({ min: 0 })
+    .withMessage('Informe um preço válido.'),
+
+  body('link_ingresso')
+    .optional({ checkFalsy: true })
+    .trim()
+    .isURL()
+    .withMessage('Informe um link de ingresso válido.'),
+
+  body('cupom')
+    .optional({ checkFalsy: true })
+    .trim()
+    .isLength({ max: 50 })
+    .withMessage('O cupom deve ter no máximo 50 caracteres.'),
+
+  body('vagas')
+    .optional({ checkFalsy: true })
+    .isInt({ min: 1 })
+    .withMessage('O número de vagas deve ser maior que zero.')
 ];
 
 exports.validarId = [

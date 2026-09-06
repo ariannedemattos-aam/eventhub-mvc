@@ -24,16 +24,15 @@ exports.buscarPorEmail = async (email) => {
  * @param {string} usuario.nome
  * @param {string} usuario.email
  * @param {string} usuario.senha
- * @param {string} usuario.tipo
  * @returns {Promise<number>}
  */
-exports.criar = async ({ nome, email, senha, tipo }) => {
+exports.criar = async ({ nome, email, senha }) => {
   const [resultado] = await pool.execute(
     `
-      INSERT INTO usuarios (nome, email, senha, tipo)
-      VALUES (?, ?, ?, ?)
+      INSERT INTO usuarios (nome, email, senha)
+      VALUES (?, ?, ?)
     `,
-    [nome, email, senha, tipo]
+    [nome, email, senha]
   );
 
   return resultado.insertId;

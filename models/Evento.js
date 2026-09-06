@@ -21,6 +21,31 @@ exports.listarTodos = async () => {
 };
 
 /**
+ * Lista os eventos criados por um usuário.
+ *
+ * @async
+ * @param {number|string} usuarioId
+ * @returns {Promise<Array>}
+ */
+exports.listarPorUsuario = async (usuarioId) => {
+  const [rows] = await pool.execute(
+    `
+      SELECT
+        eventos.*,
+        usuarios.nome AS organizador_nome
+      FROM eventos
+      INNER JOIN usuarios
+        ON usuarios.id = eventos.organizador_id
+      WHERE eventos.organizador_id = ?
+      ORDER BY eventos.data ASC
+    `,
+    [usuarioId]
+  );
+
+  return rows;
+};
+
+/**
  * Busca um evento pelo ID.
  *
  * @async
@@ -82,11 +107,20 @@ exports.criar = async ({
  * @async
  * @param {number|string} id
  * @param {Object} evento
+ * @param {string} evento.titulo
+ * @param {string} evento.descricao
+ * @param {string} evento.data
+ * @param {string} evento.local
  * @returns {Promise<boolean>}
  */
 exports.atualizar = async (
   id,
-  { titulo, descricao, data, local }
+  {
+    titulo,
+    descricao,
+    data,
+    local
+  }
 ) => {
   const [resultado] = await pool.execute(
     `

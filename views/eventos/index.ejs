@@ -5,7 +5,7 @@
   <p>Descubra os próximos eventos disponíveis no EventHub.</p>
 </section>
 
-<% if (usuario && usuario.tipo === 'organizador') { %>
+<% if (usuario) { %>
   <div style="margin-bottom: 25px;">
     <a href="/eventos/novo" class="btn btn-primary">
       Criar novo evento
@@ -14,11 +14,9 @@
 <% } %>
 
 <% if (eventos && eventos.length > 0) { %>
-
   <div class="eventos-grid">
 
     <% eventos.forEach((evento) => { %>
-
       <article class="evento-card">
 
         <h2><%= evento.titulo %></h2>
@@ -47,11 +45,9 @@
         </a>
 
       </article>
-
     <% }) %>
 
   </div>
-
 <% } else { %>
 
   <div class="empty-state">
@@ -61,7 +57,7 @@
       Ainda não existem eventos cadastrados no EventHub.
     </p>
 
-    <% if (usuario && usuario.tipo === 'organizador') { %>
+    <% if (usuario) { %>
       <a href="/eventos/novo" class="btn btn-primary">
         Criar primeiro evento
       </a>

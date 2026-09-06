@@ -2,10 +2,10 @@ const Inscricao = require('../models/Inscricao');
 const Evento = require('../models/Evento');
 
 /**
- * Inscreve o participante autenticado em um evento.
+ * Inscreve o usuário autenticado em um evento.
  *
- * Verifica se o evento existe e se o usuário ainda não possui
- * uma inscrição antes de registrar a nova inscrição.
+ * Verifica se o evento existe, se não pertence ao próprio usuário
+ * e se ainda não existe uma inscrição antes de registrar a nova inscrição.
  *
  * @async
  * @param {import('express').Request} req - Requisição contendo o ID do evento.
@@ -23,6 +23,13 @@ exports.inscrever = async (req, res, next) => {
     if (!evento) {
       return res.status(404).render('404', {
         titulo: 'Evento não encontrado'
+      });
+    }
+
+    if (evento.organizador_id === usuarioId) {
+      return res.status(403).render('erro', {
+        titulo: 'Inscrição não permitida',
+        mensagem: 'Você não pode se inscrever no próprio evento.'
       });
     }
 
@@ -50,7 +57,7 @@ exports.inscrever = async (req, res, next) => {
 };
 
 /**
- * Lista as inscrições do participante autenticado.
+ * Lista as inscrições do usuário autenticado.
  *
  * Busca no banco de dados todas as inscrições associadas
  * ao usuário presente na sessão.

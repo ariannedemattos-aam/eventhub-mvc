@@ -50,8 +50,7 @@ exports.cadastrar = async (req, res, next) => {
     const {
       nome,
       email,
-      senha,
-      tipo
+      senha
     } = req.body;
 
     const emailNormalizado = email
@@ -71,8 +70,7 @@ exports.cadastrar = async (req, res, next) => {
         ],
         dados: {
           nome,
-          email: emailNormalizado,
-          tipo
+          email: emailNormalizado
         }
       });
     }
@@ -82,12 +80,10 @@ exports.cadastrar = async (req, res, next) => {
     await Usuario.criar({
       nome: nome.trim(),
       email: emailNormalizado,
-      senha: senhaHash,
-      tipo
+      senha: senhaHash
     });
 
     return res.redirect('/login');
-
   } catch (error) {
     next(error);
   }
@@ -139,13 +135,11 @@ exports.login = async (req, res, next) => {
     req.session.usuario = {
       id: usuario.id,
       nome: usuario.nome,
-      email: usuario.email,
-      tipo: usuario.tipo
+      email: usuario.email
     };
 
     /*
-     * IMPORTANTE:
-     * força a sessão a ser salva antes do redirect.
+     * Força a sessão a ser salva antes do redirect.
      * Isso evita perder a autenticação no Render.
      */
     req.session.save((error) => {
@@ -155,7 +149,6 @@ exports.login = async (req, res, next) => {
 
       return res.redirect('/eventos');
     });
-
   } catch (error) {
     next(error);
   }
@@ -179,7 +172,6 @@ exports.logout = async (req, res, next) => {
 
       return res.redirect('/login');
     });
-
   } catch (error) {
     next(error);
   }

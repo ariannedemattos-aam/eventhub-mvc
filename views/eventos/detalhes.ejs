@@ -34,11 +34,7 @@
     </p>
   </div>
 
-  <% if (
-    usuario &&
-    usuario.tipo === 'organizador' &&
-    usuario.id === evento.organizador_id
-  ) { %>
+  <% if (usuario && usuario.id === evento.organizador_id) { %>
 
     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
 
@@ -63,7 +59,7 @@
 
   <% } %>
 
-  <% if (usuario && usuario.tipo === 'participante') { %>
+  <% if (usuario && usuario.id !== evento.organizador_id) { %>
 
     <form
       action="/eventos/<%= evento.id %>/inscrever"
@@ -80,13 +76,19 @@
   <% if (!usuario) { %>
 
     <div style="margin-top: 20px;">
+
       <p>
         Faça login para se inscrever neste evento.
       </p>
 
-      <a href="/login" class="btn btn-primary" style="margin-top: 10px;">
+      <a
+        href="/login"
+        class="btn btn-primary"
+        style="margin-top: 10px;"
+      >
         Entrar
       </a>
+
     </div>
 
   <% } %>

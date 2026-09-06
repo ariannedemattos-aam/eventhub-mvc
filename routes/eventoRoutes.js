@@ -3,8 +3,7 @@ const express = require('express');
 const eventoController = require('../controllers/eventoController');
 
 const {
-  autenticado,
-  organizador
+  autenticado
 } = require('../middlewares/authMiddleware');
 
 const {
@@ -22,14 +21,18 @@ router.get(
 router.get(
   '/novo',
   autenticado,
-  organizador,
   eventoController.exibirCriacao
+);
+
+router.get(
+  '/meus-eventos',
+  autenticado,
+  eventoController.meusEventos
 );
 
 router.post(
   '/',
   autenticado,
-  organizador,
   validarEvento,
   eventoController.criar
 );
@@ -43,7 +46,6 @@ router.get(
 router.get(
   '/:id/editar',
   autenticado,
-  organizador,
   validarId,
   eventoController.exibirEdicao
 );
@@ -51,7 +53,6 @@ router.get(
 router.post(
   '/:id/editar',
   autenticado,
-  organizador,
   validarId,
   validarEvento,
   eventoController.atualizar
@@ -60,7 +61,6 @@ router.post(
 router.post(
   '/:id/excluir',
   autenticado,
-  organizador,
   validarId,
   eventoController.excluir
 );

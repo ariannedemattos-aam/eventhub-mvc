@@ -1,16 +1,17 @@
 const { validationResult } = require('express-validator');
+
 const Evento = require('../models/Evento');
 
 /**
- * Lista todos os eventos cadastrados.
+ * Lista os eventos disponíveis.
  *
  * Busca os eventos no banco de dados e renderiza
- * a página principal de eventos.
+ * a página principal de descoberta de eventos.
  *
  * @async
- * @param {import('express').Request} req - Objeto da requisição HTTP.
- * @param {import('express').Response} res - Objeto da resposta HTTP.
- * @param {import('express').NextFunction} next - Função para encaminhar erros ao middleware global.
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
  * @returns {Promise<void>}
  */
 exports.listar = async (req, res, next) => {
@@ -27,15 +28,36 @@ exports.listar = async (req, res, next) => {
 };
 
 /**
- * Exibe os detalhes de um evento específico.
- *
- * Busca o evento pelo identificador recebido na URL
- * e renderiza sua página de detalhes.
+ * Lista os eventos criados pelo usuário autenticado.
  *
  * @async
- * @param {import('express').Request} req - Requisição contendo o ID do evento.
- * @param {import('express').Response} res - Objeto da resposta HTTP.
- * @param {import('express').NextFunction} next - Função para encaminhar erros ao middleware global.
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ * @returns {Promise<void>}
+ */
+exports.meusEventos = async (req, res, next) => {
+  try {
+    const eventos = await Evento.listarPorUsuario(
+      req.session.usuario.id
+    );
+
+    res.render('eventos/meus-eventos', {
+      titulo: 'Meus eventos',
+      eventos
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Exibe os detalhes de um evento específico.
+ *
+ * @async
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
  * @returns {Promise<void>}
  */
 exports.detalhes = async (req, res, next) => {
@@ -61,9 +83,9 @@ exports.detalhes = async (req, res, next) => {
  * Exibe o formulário de criação de evento.
  *
  * @async
- * @param {import('express').Request} req - Objeto da requisição HTTP.
- * @param {import('express').Response} res - Objeto da resposta HTTP.
- * @param {import('express').NextFunction} next - Função para encaminhar erros ao middleware global.
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
  * @returns {Promise<void>}
  */
 exports.exibirCriacao = async (req, res, next) => {
@@ -82,12 +104,12 @@ exports.exibirCriacao = async (req, res, next) => {
  * Cria um novo evento.
  *
  * Valida os dados enviados pelo formulário e associa
- * o evento ao organizador autenticado.
+ * o evento ao usuário autenticado que o criou.
  *
  * @async
- * @param {import('express').Request} req - Requisição contendo os dados do evento.
- * @param {import('express').Response} res - Objeto da resposta HTTP.
- * @param {import('express').NextFunction} next - Função para encaminhar erros ao middleware global.
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
  * @returns {Promise<void>}
  */
 exports.criar = async (req, res, next) => {
@@ -102,7 +124,12 @@ exports.criar = async (req, res, next) => {
       });
     }
 
-    const { titulo, descricao, data, local } = req.body;
+    const {
+      titulo,
+      descricao,
+      data,
+      local
+    } = req.body;
 
     await Evento.criar({
       titulo,
@@ -112,7 +139,7 @@ exports.criar = async (req, res, next) => {
       organizadorId: req.session.usuario.id
     });
 
-    res.redirect('/eventos');
+    res.redirect('/eventos/meus-eventos');
   } catch (error) {
     next(error);
   }
@@ -121,13 +148,13 @@ exports.criar = async (req, res, next) => {
 /**
  * Exibe o formulário de edição de um evento.
  *
- * Verifica se o evento existe e se pertence ao
- * organizador autenticado antes de permitir a edição.
+ * Verifica se o evento existe e se pertence ao usuário
+ * autenticado que o criou antes de permitir a edição.
  *
  * @async
- * @param {import('express').Request} req - Requisição contendo o ID do evento.
- * @param {import('express').Response} res - Objeto da resposta HTTP.
- * @param {import('express').NextFunction} next - Função para encaminhar erros ao middleware global.
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
  * @returns {Promise<void>}
  */
 exports.exibirEdicao = async (req, res, next) => {
@@ -160,13 +187,13 @@ exports.exibirEdicao = async (req, res, next) => {
 /**
  * Atualiza os dados de um evento existente.
  *
- * Valida os novos dados e verifica se o usuário autenticado
- * é o organizador responsável pelo evento.
+ * Valida os novos dados e verifica se o evento pertence
+ * ao usuário autenticado antes de realizar a atualização.
  *
  * @async
- * @param {import('express').Request} req - Requisição contendo o ID e os novos dados do evento.
- * @param {import('express').Response} res - Objeto da resposta HTTP.
- * @param {import('express').NextFunction} next - Função para encaminhar erros ao middleware global.
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
  * @returns {Promise<void>}
  */
 exports.atualizar = async (req, res, next) => {
@@ -198,7 +225,12 @@ exports.atualizar = async (req, res, next) => {
       });
     }
 
-    const { titulo, descricao, data, local } = req.body;
+    const {
+      titulo,
+      descricao,
+      data,
+      local
+    } = req.body;
 
     await Evento.atualizar(req.params.id, {
       titulo,
@@ -216,13 +248,13 @@ exports.atualizar = async (req, res, next) => {
 /**
  * Exclui um evento.
  *
- * Verifica se o evento existe e se pertence ao
- * organizador autenticado antes de removê-lo do banco.
+ * Verifica se o evento existe e se pertence ao usuário
+ * autenticado que o criou antes de removê-lo do banco.
  *
  * @async
- * @param {import('express').Request} req - Requisição contendo o ID do evento.
- * @param {import('express').Response} res - Objeto da resposta HTTP.
- * @param {import('express').NextFunction} next - Função para encaminhar erros ao middleware global.
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
  * @returns {Promise<void>}
  */
 exports.excluir = async (req, res, next) => {
@@ -244,7 +276,8 @@ exports.excluir = async (req, res, next) => {
 
     await Evento.excluir(req.params.id);
 
-    res.redirect('/eventos');
+
+    res.redirect('/eventos/meus-eventos');
   } catch (error) {
     next(error);
   }
