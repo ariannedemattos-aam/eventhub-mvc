@@ -1,0 +1,43 @@
+<%- include('../partials/header') %>
+
+<section class="page-header">
+  <h1>Meus favoritos</h1>
+
+  <p>
+    Eventos que você salvou para encontrar novamente com facilidade.
+  </p>
+</section>
+
+<div class="actions mb-3">
+  <a
+    href="/eventos"
+    class="btn btn-secondary"
+  >
+    Explorar eventos
+  </a>
+</div>
+
+<% if (favoritos && favoritos.length > 0) { %>
+  <div class="eventos-grid">
+    <% favoritos.forEach((evento) => { %>
+      <%- include('../partials/evento-card', { evento }) %>
+    <% }) %>
+  </div>
+<% } else { %>
+  <div class="empty-state">
+    <h2>Nenhum favorito ainda</h2>
+
+    <p>
+      Quando você favoritar um evento, ele aparecerá aqui.
+    </p>
+
+    <a
+      href="/eventos"
+      class="btn btn-primary"
+    >
+      Encontrar eventos
+    </a>
+  </div>
+<% } %>
+
+<%- include('../partials/footer') %>
