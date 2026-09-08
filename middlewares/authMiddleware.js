@@ -1,10 +1,7 @@
 /**
  * Garante que o usuário esteja autenticado.
  *
- * Este middleware protege rotas que exigem uma conta ativa.
- * Como todos os usuários do EventHub podem criar eventos e
- * participar de eventos de outras pessoas, não há mais
- * separação entre organizador e participante.
+ * Protege rotas que exigem uma conta ativa.
  *
  * @param {import('express').Request} req
  * @param {import('express').Response} res

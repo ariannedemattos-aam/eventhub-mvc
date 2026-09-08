@@ -1,40 +1,22 @@
 const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
-
 const Usuario = require('../models/Usuario');
 
-/**
- * Exibe a página de login.
- */
-exports.exibirLogin = async (req, res, next) => {
-  try {
-    res.render('auth/login', {
-      titulo: 'Entrar',
-      erro: null
-    });
-  } catch (error) {
-    next(error);
-  }
+exports.exibirLogin = (req, res) => {
+  res.render('auth/login', {
+    titulo: 'Entrar',
+    erro: null
+  });
 };
 
-/**
- * Exibe a página de cadastro.
- */
-exports.exibirCadastro = async (req, res, next) => {
-  try {
-    res.render('auth/cadastro', {
-      titulo: 'Criar conta',
-      erros: [],
-      dados: {}
-    });
-  } catch (error) {
-    next(error);
-  }
+exports.exibirCadastro = (req, res) => {
+  res.render('auth/cadastro', {
+    titulo: 'Criar conta',
+    erros: [],
+    dados: {}
+  });
 };
 
-/**
- * Cadastra um novo usuário.
- */
 exports.cadastrar = async (req, res, next) => {
   try {
     const erros = validationResult(req);
@@ -47,15 +29,9 @@ exports.cadastrar = async (req, res, next) => {
       });
     }
 
-    const {
-      nome,
-      email,
-      senha
-    } = req.body;
+    const { nome, email, senha } = req.body;
 
-    const emailNormalizado = email
-      .trim()
-      .toLowerCase();
+    const emailNormalizado = email.trim().toLowerCase();
 
     const usuarioExistente =
       await Usuario.buscarPorEmail(emailNormalizado);
@@ -84,14 +60,12 @@ exports.cadastrar = async (req, res, next) => {
     });
 
     return res.redirect('/login');
+
   } catch (error) {
     next(error);
   }
 };
 
-/**
- * Autentica o usuário e cria a sessão.
- */
 exports.login = async (req, res, next) => {
   try {
     const erros = validationResult(req);
@@ -103,14 +77,10 @@ exports.login = async (req, res, next) => {
       });
     }
 
-    const email = req.body.email
-      .trim()
-      .toLowerCase();
-
+    const email = req.body.email.trim().toLowerCase();
     const senha = req.body.senha;
 
-    const usuario =
-      await Usuario.buscarPorEmail(email);
+    const usuario = await Usuario.buscarPorEmail(email);
 
     if (!usuario) {
       return res.status(401).render('auth/login', {
@@ -119,11 +89,10 @@ exports.login = async (req, res, next) => {
       });
     }
 
-    const senhaValida =
-      await bcrypt.compare(
-        senha,
-        usuario.senha
-      );
+    const senhaValida = await bcrypt.compare(
+      senha,
+      usuario.senha
+    );
 
     if (!senhaValida) {
       return res.status(401).render('auth/login', {
@@ -135,13 +104,10 @@ exports.login = async (req, res, next) => {
     req.session.usuario = {
       id: usuario.id,
       nome: usuario.nome,
-      email: usuario.email
+      email: usuario.email,
+      foto_url: usuario.foto_url || null
     };
 
-    /*
-     * Força a sessão a ser salva antes do redirect.
-     * Isso evita perder a autenticação no Render.
-     */
     req.session.save((error) => {
       if (error) {
         return next(error);
@@ -149,30 +115,24 @@ exports.login = async (req, res, next) => {
 
       return res.redirect('/eventos');
     });
+
   } catch (error) {
     next(error);
   }
 };
 
-/**
- * Encerra a sessão.
- */
-exports.logout = async (req, res, next) => {
-  try {
-    req.session.destroy((error) => {
-      if (error) {
-        return next(error);
-      }
+exports.logout = (req, res, next) => {
+  req.session.destroy((error) => {
+    if (error) {
+      return next(error);
+    }
 
-      res.clearCookie('connect.sid', {
-        httpOnly: true,
-        sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production'
-      });
-
-      return res.redirect('/login');
+    res.clearCookie('eventhub.sid', {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production'
     });
-  } catch (error) {
-    next(error);
-  }
+
+    return res.redirect('/login');
+  });
 };

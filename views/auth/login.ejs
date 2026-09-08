@@ -2,8 +2,8 @@
 
 <section class="auth-page">
   <div class="auth-card">
-
     <h1>Bem-vindo de volta 💜</h1>
+
     <p class="subtitle">
       Entre na sua conta para continuar no EventHub.
     </p>
@@ -15,7 +15,6 @@
     <% } %>
 
     <form action="/login" method="POST">
-
       <div class="form-group">
         <label for="email">E-mail</label>
 
@@ -44,17 +43,18 @@
         >
       </div>
 
-      <button type="submit" class="btn btn-primary">
+      <button
+        type="submit"
+        class="btn btn-primary btn-block"
+      >
         Entrar
       </button>
-
     </form>
 
-    <p class="subtitle" style="margin-top: 20px; margin-bottom: 0;">
+    <p class="auth-footer">
       Ainda não possui uma conta?
       <a href="/cadastro">Cadastre-se</a>
     </p>
-
   </div>
 </section>
 
