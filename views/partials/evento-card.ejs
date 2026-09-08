@@ -1,0 +1,156 @@
+<%
+  const hojeCard = new Date();
+  hojeCard.setHours(0, 0, 0, 0);
+
+  const dataCard = new Date(evento.data);
+  dataCard.setHours(0, 0, 0, 0);
+
+  const eventoEncerrado = dataCard < hojeCard;
+
+  const eventoEsgotado =
+    evento.tipo_ingresso === 'gratuito' &&
+    evento.vagas !== null &&
+    evento.vagas !== undefined &&
+    Number(evento.vagas_restantes) <= 0;
+
+  const podeEditar =
+    typeof exibirEdicao !== 'undefined' &&
+    exibirEdicao;
+%>
+
+<article class="evento-card">
+  <% if (evento.imagem_url) { %>
+    <img
+      src="<%= evento.imagem_url %>"
+      alt="Capa do evento <%= evento.titulo %>"
+      class="evento-card-imagem"
+      loading="lazy"
+    >
+  <% } else { %>
+    <div class="evento-card-imagem-placeholder">
+      EH
+    </div>
+  <% } %>
+
+  <div class="evento-card-conteudo">
+    <div class="evento-card-topo">
+      <div class="badges">
+        <% if (evento.categoria_nome) { %>
+          <span class="badge badge-categoria">
+            <%= evento.categoria_nome %>
+          </span>
+        <% } %>
+
+        <% if (evento.tipo_ingresso === 'gratuito') { %>
+          <span class="badge badge-gratuito">
+            Gratuito
+          </span>
+        <% } else { %>
+          <span class="badge badge-pago">
+            Pago
+          </span>
+        <% } %>
+      </div>
+    </div>
+
+    <h2>
+      <a href="/eventos/<%= evento.id || evento.evento_id %>">
+        <%= evento.titulo %>
+      </a>
+    </h2>
+
+    <div class="evento-meta">
+      <span>
+        📅
+        <%= new Date(evento.data).toLocaleDateString(
+          'pt-BR',
+          { timeZone: 'UTC' }
+        ) %>
+      </span>
+
+      <span>
+        📍 <%= evento.local %>
+      </span>
+
+      <% if (evento.organizador_nome) { %>
+        <span>
+          👤
+          <% if (evento.organizador_id) { %>
+            <a
+              href="/usuarios/<%= evento.organizador_id %>"
+              class="organizador-link"
+            >
+              <%= evento.organizador_nome %>
+            </a>
+          <% } else { %>
+            <%= evento.organizador_nome %>
+          <% } %>
+        </span>
+      <% } %>
+
+      <% if (
+        evento.tipo_ingresso === 'pago' &&
+        evento.preco !== null &&
+        evento.preco !== undefined
+      ) { %>
+        <span>
+          🎟️
+          <%= Number(evento.preco).toLocaleString(
+            'pt-BR',
+            {
+              style: 'currency',
+              currency: 'BRL'
+            }
+          ) %>
+        </span>
+      <% } %>
+
+      <% if (
+        evento.tipo_ingresso === 'gratuito' &&
+        evento.vagas !== null &&
+        evento.vagas !== undefined
+      ) { %>
+        <span>
+          👥
+          <%= evento.vagas_restantes %>
+          vaga<%= Number(evento.vagas_restantes) === 1 ? '' : 's' %>
+          restante<%= Number(evento.vagas_restantes) === 1 ? '' : 's' %>
+        </span>
+      <% } %>
+    </div>
+
+    <div class="badges mb-2">
+      <% if (eventoEncerrado) { %>
+        <span class="badge badge-encerrado">
+          Encerrado
+        </span>
+      <% } else if (eventoEsgotado) { %>
+        <span class="badge badge-esgotado">
+          Esgotado
+        </span>
+      <% } else if (evento.tipo_ingresso === 'gratuito') { %>
+        <span class="badge badge-aberto">
+          Inscrições abertas
+        </span>
+      <% } %>
+    </div>
+
+    <div class="evento-card-acoes">
+      <a
+        href="/eventos/<%= evento.id || evento.evento_id %>"
+        class="btn btn-secondary"
+      >
+        Ver detalhes
+      </a>
+
+      <% if (podeEditar) { %>
+        <a
+          href="/eventos/<%= evento.id %>/editar"
+          class="btn btn-outline"
+        >
+          Editar
+        </a>
+      <% } %>
+    </div>
+  </div>
+</article>

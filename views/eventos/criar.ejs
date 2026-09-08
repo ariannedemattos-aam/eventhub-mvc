@@ -2,30 +2,25 @@
 
 <section class="page-header">
   <h1>Criar evento</h1>
-
   <p>
-    Preencha as informações para publicar um novo evento.
+    Publique um evento e conecte-se com pessoas interessadas.
   </p>
 </section>
 
 <div class="form-container">
-
   <% if (erros && erros.length > 0) { %>
-
     <div class="alert alert-error">
-
       <% erros.forEach((erro) => { %>
-
         <p><%= erro.msg %></p>
-
       <% }) %>
-
     </div>
-
   <% } %>
 
-  <form action="/eventos" method="POST">
-
+  <form
+    action="/eventos"
+    method="POST"
+    enctype="multipart/form-data"
+  >
     <div class="form-group">
       <label for="titulo">Título</label>
 
@@ -35,6 +30,8 @@
         name="titulo"
         class="form-control"
         value="<%= dados && dados.titulo ? dados.titulo : '' %>"
+        minlength="3"
+        maxlength="150"
         required
       >
     </div>
@@ -46,51 +43,245 @@
         id="descricao"
         name="descricao"
         class="form-control"
+        minlength="10"
+        maxlength="2000"
         required
       ><%= dados && dados.descricao ? dados.descricao : '' %></textarea>
+
+      <small class="form-help">
+        Conte o que as pessoas podem esperar do evento.
+      </small>
     </div>
 
-    <div class="form-group">
-      <label for="data">Data</label>
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="data">Data</label>
 
-      <input
-        type="date"
-        id="data"
-        name="data"
-        class="form-control"
-        min="<%= new Date().toISOString().split('T')[0] %>"
-        value="<%= dados && dados.data ? dados.data : '' %>"
-        required
+        <input
+          type="date"
+          id="data"
+          name="data"
+          class="form-control"
+          value="<%= dados && dados.data ? dados.data : '' %>"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="categoria_id">Categoria</label>
+
+        <select
+          id="categoria_id"
+          name="categoria_id"
+          class="form-control"
+          required
+        >
+          <option value="">
+            Selecione uma categoria
+          </option>
+
+          <% categorias.forEach((categoria) => { %>
+            <option
+              value="<%= categoria.id %>"
+              <%= dados &&
+                  String(dados.categoria_id) === String(categoria.id)
+                    ? 'selected'
+                    : '' %>
+            >
+              <%= categoria.nome %>
+            </option>
+          <% }) %>
+        </select>
+      </div>
+
+      <div class="form-group form-group-full">
+        <label for="local">Local</label>
+
+        <input
+          type="text"
+          id="local"
+          name="local"
+          class="form-control"
+          placeholder="Ex.: Centro de Eventos, Gramado - RS"
+          value="<%= dados && dados.local ? dados.local : '' %>"
+          maxlength="150"
+          required
+        >
+      </div>
+
+      <div class="form-group form-group-full">
+        <label for="imagem">
+          Imagem de capa do dispositivo
+        </label>
+
+        <input
+          type="file"
+          id="imagem"
+          name="imagem"
+          class="form-control"
+          accept="image/jpeg,image/png,image/webp"
+        >
+
+        <small class="form-help">
+          JPG, PNG ou WEBP. Tamanho máximo: 5 MB.
+        </small>
+      </div>
+
+      <div class="form-group form-group-full">
+        <label for="imagem_url">
+          Ou use uma URL de imagem
+        </label>
+
+        <input
+          type="url"
+          id="imagem_url"
+          name="imagem_url"
+          class="form-control"
+          placeholder="https://exemplo.com/imagem.jpg"
+          value="<%= dados && dados.imagem_url ? dados.imagem_url : '' %>"
+        >
+
+        <small class="form-help">
+          Opcional. Se escolher uma imagem do dispositivo,
+          ela terá prioridade sobre esta URL.
+        </small>
+      </div>
+
+      <div class="form-group form-group-full">
+        <label for="tipo_ingresso">
+          Tipo de ingresso
+        </label>
+
+        <select
+          id="tipo_ingresso"
+          name="tipo_ingresso"
+          class="form-control"
+          required
+        >
+          <option
+            value="gratuito"
+            <%= !dados ||
+                !dados.tipo_ingresso ||
+                dados.tipo_ingresso === 'gratuito'
+                  ? 'selected'
+                  : '' %>
+          >
+            Gratuito
+          </option>
+
+          <option
+            value="pago"
+            <%= dados &&
+                dados.tipo_ingresso === 'pago'
+                  ? 'selected'
+                  : '' %>
+          >
+            Pago
+          </option>
+        </select>
+      </div>
+
+      <div
+        class="form-group form-group-full campo-condicional"
+        data-ingresso="gratuito"
       >
-    </div>
+        <label for="vagas">
+          Quantidade de vagas
+        </label>
 
-    <div class="form-group">
-      <label for="local">Local</label>
+        <input
+          type="number"
+          id="vagas"
+          name="vagas"
+          class="form-control"
+          min="1"
+          placeholder="Deixe vazio para não limitar"
+          value="<%= dados && dados.vagas ? dados.vagas : '' %>"
+        >
 
-      <input
-        type="text"
-        id="local"
-        name="local"
-        class="form-control"
-        value="<%= dados && dados.local ? dados.local : '' %>"
-        required
+        <small class="form-help">
+          Se ficar vazio, o evento não terá limite de inscrições.
+        </small>
+      </div>
+
+      <div
+        class="form-group campo-condicional"
+        data-ingresso="pago"
       >
+        <label for="preco">
+          Preço
+        </label>
+
+        <input
+          type="number"
+          id="preco"
+          name="preco"
+          class="form-control"
+          min="0"
+          step="0.01"
+          placeholder="0,00"
+          value="<%= dados && dados.preco ? dados.preco : '' %>"
+        >
+      </div>
+
+      <div
+        class="form-group campo-condicional"
+        data-ingresso="pago"
+      >
+        <label for="cupom">
+          Cupom ou benefício
+        </label>
+
+        <input
+          type="text"
+          id="cupom"
+          name="cupom"
+          class="form-control"
+          maxlength="50"
+          placeholder="Opcional"
+          value="<%= dados && dados.cupom ? dados.cupom : '' %>"
+        >
+      </div>
+
+      <div
+        class="form-group form-group-full campo-condicional"
+        data-ingresso="pago"
+      >
+        <label for="link_ingresso">
+          Link para compra
+        </label>
+
+        <input
+          type="url"
+          id="link_ingresso"
+          name="link_ingresso"
+          class="form-control"
+          placeholder="https://..."
+          value="<%= dados && dados.link_ingresso ? dados.link_ingresso : '' %>"
+        >
+
+        <small class="form-help">
+          A venda acontece externamente. O EventHub não processa pagamentos.
+        </small>
+      </div>
     </div>
 
-    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-
-      <button type="submit" class="btn btn-primary">
-        Criar evento
+    <div class="actions mt-3">
+      <button
+        type="submit"
+        class="btn btn-primary"
+      >
+        Publicar evento
       </button>
 
-      <a href="/eventos" class="btn btn-secondary">
+      <a
+        href="/eventos"
+        class="btn btn-secondary"
+      >
         Cancelar
       </a>
-
     </div>
-
   </form>
-
 </div>
 
 <%- include('../partials/footer') %>

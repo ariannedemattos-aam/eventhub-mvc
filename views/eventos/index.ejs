@@ -1,69 +1,210 @@
 <%- include('../partials/header') %>
 
 <section class="page-header">
-  <h1>Eventos</h1>
-  <p>Descubra os próximos eventos disponíveis no EventHub.</p>
+  <h1>Descubra eventos</h1>
+
+  <p>
+    Encontre experiências, encontros e atividades para participar.
+  </p>
 </section>
 
 <% if (usuario) { %>
-  <div style="margin-bottom: 25px;">
-    <a href="/eventos/novo" class="btn btn-primary">
-      Criar novo evento
+  <div class="actions mb-3">
+    <a
+      href="/eventos/novo"
+      class="btn btn-primary"
+    >
+      Criar evento
+    </a>
+
+    <a
+      href="/eventos/para-voce"
+      class="btn btn-secondary"
+    >
+      ✨ Para você
     </a>
   </div>
 <% } %>
 
+<form
+  action="/eventos"
+  method="GET"
+  class="filtros"
+>
+  <div class="filtros-grid">
+    <div class="form-group">
+      <label for="busca">
+        Buscar
+      </label>
+
+      <input
+        type="search"
+        id="busca"
+        name="busca"
+        class="form-control"
+        placeholder="Nome do evento"
+        value="<%= filtros.busca || '' %>"
+      >
+    </div>
+
+    <div class="form-group">
+      <label for="categoria">
+        Categoria
+      </label>
+
+      <select
+        id="categoria"
+        name="categoria"
+        class="form-control"
+      >
+        <option value="">
+          Todas
+        </option>
+
+        <% categorias.forEach((categoria) => { %>
+          <option
+            value="<%= categoria.id %>"
+            <%= String(filtros.categoriaId) === String(categoria.id)
+              ? 'selected'
+              : '' %>
+          >
+            <%= categoria.nome %>
+          </option>
+        <% }) %>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="local">
+        Local
+      </label>
+
+      <input
+        type="text"
+        id="local"
+        name="local"
+        class="form-control"
+        placeholder="Cidade ou local"
+        value="<%= filtros.local || '' %>"
+      >
+    </div>
+
+    <div class="form-group">
+      <label for="periodo">
+        Data
+      </label>
+
+      <select
+        id="periodo"
+        name="periodo"
+        class="form-control"
+      >
+        <option value="">
+          Qualquer data
+        </option>
+
+        <option
+          value="hoje"
+          <%= filtros.periodo === 'hoje'
+            ? 'selected'
+            : '' %>
+        >
+          Hoje
+        </option>
+
+        <option
+          value="fim-de-semana"
+          <%= filtros.periodo === 'fim-de-semana'
+            ? 'selected'
+            : '' %>
+        >
+          Este fim de semana
+        </option>
+
+        <option
+          value="proximos"
+          <%= filtros.periodo === 'proximos'
+            ? 'selected'
+            : '' %>
+        >
+          Próximos 30 dias
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="tipo">
+        Ingresso
+      </label>
+
+      <select
+        id="tipo"
+        name="tipo"
+        class="form-control"
+      >
+        <option value="">
+          Todos
+        </option>
+
+        <option
+          value="gratuito"
+          <%= filtros.tipoIngresso === 'gratuito'
+            ? 'selected'
+            : '' %>
+        >
+          Gratuito
+        </option>
+
+        <option
+          value="pago"
+          <%= filtros.tipoIngresso === 'pago'
+            ? 'selected'
+            : '' %>
+        >
+          Pago
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div class="filtros-acoes">
+    <button
+      type="submit"
+      class="btn btn-primary"
+    >
+      Aplicar filtros
+    </button>
+
+    <a
+      href="/eventos"
+      class="btn btn-outline"
+    >
+      Limpar
+    </a>
+  </div>
+</form>
+
 <% if (eventos && eventos.length > 0) { %>
   <div class="eventos-grid">
-
     <% eventos.forEach((evento) => { %>
-      <article class="evento-card">
-
-        <h2><%= evento.titulo %></h2>
-
-        <p>
-          <strong>Data:</strong>
-          <%= new Date(evento.data).toLocaleDateString('pt-BR') %>
-        </p>
-
-        <p>
-          <strong>Local:</strong>
-          <%= evento.local %>
-        </p>
-
-        <p>
-          <strong>Organizador:</strong>
-          <%= evento.organizador_nome %>
-        </p>
-
-        <a
-          href="/eventos/<%= evento.id %>"
-          class="btn btn-secondary"
-          style="margin-top: 12px;"
-        >
-          Ver detalhes
-        </a>
-
-      </article>
+      <%- include('../partials/evento-card', { evento }) %>
     <% }) %>
-
   </div>
 <% } else { %>
-
   <div class="empty-state">
-    <h2>Nenhum evento disponível</h2>
+    <h2>Nenhum evento encontrado</h2>
 
     <p>
-      Ainda não existem eventos cadastrados no EventHub.
+      Não encontramos eventos que correspondam aos filtros escolhidos.
     </p>
 
-    <% if (usuario) { %>
-      <a href="/eventos/novo" class="btn btn-primary">
-        Criar primeiro evento
-      </a>
-    <% } %>
+    <a
+      href="/eventos"
+      class="btn btn-secondary"
+    >
+      Ver todos os eventos
+    </a>
   </div>
-
 <% } %>
 
 <%- include('../partials/footer') %>

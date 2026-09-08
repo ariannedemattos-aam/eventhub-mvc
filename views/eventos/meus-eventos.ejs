@@ -2,67 +2,68 @@
 
 <section class="page-header">
   <h1>Meus eventos</h1>
-  <p>Gerencie os eventos que você criou no EventHub.</p>
+
+  <p>
+    Gerencie os eventos que você publica no EventHub.
+  </p>
 </section>
 
-<div style="margin-bottom: 25px;">
-  <a href="/eventos/novo" class="btn btn-primary">
+<div class="actions mb-3">
+  <a
+    href="/eventos/novo"
+    class="btn btn-primary"
+  >
     Criar novo evento
   </a>
 </div>
 
-<% if (eventos && eventos.length > 0) { %>
-  <div class="eventos-grid">
-
-    <% eventos.forEach((evento) => { %>
-      <article class="evento-card">
-
-        <h2><%= evento.titulo %></h2>
-
-        <p>
-          <strong>Data:</strong>
-          <%= new Date(evento.data).toLocaleDateString('pt-BR') %>
-        </p>
-
-        <p>
-          <strong>Local:</strong>
-          <%= evento.local %>
-        </p>
-
-        <div style="margin-top: 12px;">
-          <a
-            href="/eventos/<%= evento.id %>"
-            class="btn btn-secondary"
-          >
-            Ver detalhes
-          </a>
-
-          <a
-            href="/eventos/<%= evento.id %>/editar"
-            class="btn btn-primary"
-          >
-            Editar
-          </a>
-        </div>
-
-      </article>
-    <% }) %>
-
-  </div>
-<% } else { %>
-
-  <div class="empty-state">
-    <h2>Você ainda não criou nenhum evento</h2>
-
-    <p>
-      Crie seu primeiro evento e ele aparecerá aqui.
-    </p>
-
-    <a href="/eventos/novo" class="btn btn-primary">
-      Criar primeiro evento
-    </a>
+<section>
+  <div class="section-header">
+    <h2>Próximos eventos</h2>
   </div>
 
+  <% if (proximos && proximos.length > 0) { %>
+    <div class="eventos-grid">
+      <% proximos.forEach((evento) => { %>
+        <%- include('../partials/evento-card', {
+          evento,
+          exibirEdicao: true
+        }) %>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div class="empty-state">
+      <h2>Nenhum evento futuro</h2>
+
+      <p>
+        Você não possui eventos futuros publicados.
+      </p>
+
+      <a
+        href="/eventos/novo"
+        class="btn btn-primary"
+      >
+        Criar evento
+      </a>
+    </div>
+  <% } %>
+</section>
+
+<% if (anteriores && anteriores.length > 0) { %>
+  <section>
+    <div class="section-header">
+      <h2>Eventos anteriores</h2>
+    </div>
+
+    <div class="eventos-grid">
+      <% anteriores.forEach((evento) => { %>
+        <%- include('../partials/evento-card', {
+          evento,
+          exibirEdicao: true
+        }) %>
+      <% }) %>
+    </div>
+  </section>
 <% } %>
 
 <%- include('../partials/footer') %>
