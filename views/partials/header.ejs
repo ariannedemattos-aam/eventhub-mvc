@@ -1,76 +1,115 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
 
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title><%= titulo ? `${titulo} | EventHub` : 'EventHub' %></title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-  <link rel="stylesheet" href="/css/style.css">
+  <meta
+    name="description"
+    content="EventHub — descubra, divulgue e participe de eventos."
+  >
+
+  <title>
+    <%= titulo ? `${titulo} | EventHub` : 'EventHub' %>
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="/css/style.css"
+  >
 </head>
 
 <body>
   <header>
     <div class="container navbar">
+      <a
+        href="/eventos"
+        class="logo"
+      >
+        <img
+          src="/imagens/logo.png"
+          alt="Logo EventHub"
+        >
 
-      <a href="/eventos" class="logo">
-        <img src="/imagens/logo.png" alt="Logo EventHub">
         <span>EventHub</span>
       </a>
 
-      <nav>
+      <nav aria-label="Navegação principal">
         <ul class="nav-links">
-
           <li>
-            <a href="/eventos">Eventos</a>
+            <a href="/eventos">
+              Eventos
+            </a>
           </li>
 
           <% if (usuario) { %>
-
             <li>
-              <a href="/eventos/meus-eventos">Meus eventos</a>
+              <a href="/eventos/para-voce">
+                Para você
+              </a>
             </li>
 
             <li>
-              <a href="/eventos/novo">Criar evento</a>
+              <a href="/eventos/novo">
+                Criar evento
+              </a>
             </li>
 
             <li>
-              <a href="/minhas-inscricoes">Minhas inscrições</a>
+              <a
+                href="/perfil"
+                class="usuario-navbar"
+              >
+                <% if (usuario.foto_url) { %>
+                  <img
+                    src="<%= usuario.foto_url %>"
+                    alt=""
+                    class="usuario-avatar-mini"
+                  >
+                <% } %>
+
+                <span>
+                  <strong><%= usuario.nome %></strong>
+                </span>
+              </a>
             </li>
 
             <li>
-              <span class="usuario-navbar">
-                Olá, <strong><%= usuario.nome %></strong>
-              </span>
-            </li>
-
-            <li>
-              <form action="/logout" method="POST">
-                <button type="submit" class="btn btn-secondary">
+              <form
+                action="/logout"
+                method="POST"
+              >
+                <button
+                  type="submit"
+                  class="btn btn-secondary"
+                >
                   Sair
                 </button>
               </form>
             </li>
-
           <% } else { %>
-
             <li>
-              <a href="/login">Entrar</a>
-            </li>
-
-            <li>
-              <a href="/cadastro" class="btn btn-primary">
-                Criar conta
+              <a href="/login">
+                Entrar
               </a>
             </li>
 
+            <li>
+              <a
+                href="/cadastro"
+                class="btn btn-primary"
+              >
+                Criar conta
+              </a>
+            </li>
           <% } %>
-
         </ul>
       </nav>
-
     </div>
   </header>
 
