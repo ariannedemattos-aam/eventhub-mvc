@@ -1,6 +1,8 @@
 const express = require('express');
 
-const inscricaoController = require('../controllers/inscricaoController');
+const inscricaoController = require(
+  '../controllers/inscricaoController'
+);
 
 const {
   autenticado

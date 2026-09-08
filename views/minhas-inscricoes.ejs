@@ -2,77 +2,198 @@
 
 <section class="page-header">
   <h1>Minhas inscrições</h1>
-  <p>Veja os eventos em que você já confirmou participação.</p>
+
+  <p>
+    Acompanhe os eventos em que você confirmou participação.
+  </p>
 </section>
 
-<% if (inscricoes && inscricoes.length > 0) { %>
-
-  <div class="eventos-grid">
-
-    <% inscricoes.forEach((inscricao) => { %>
-
-      <article class="evento-card">
-
-        <h2><%= inscricao.titulo %></h2>
-
-        <p>
-          <strong>Data:</strong>
-          <%= new Date(inscricao.data).toLocaleDateString('pt-BR') %>
-        </p>
-
-        <p>
-          <strong>Local:</strong>
-          <%= inscricao.local %>
-        </p>
-
-        <p>
-          <strong>Organizador:</strong>
-          <%= inscricao.organizador_nome %>
-        </p>
-
-        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px;">
-
-          <a
-            href="/eventos/<%= inscricao.evento_id %>"
-            class="btn btn-secondary"
-          >
-            Ver evento
-          </a>
-
-          <form
-            action="/inscricoes/<%= inscricao.inscricao_id %>/cancelar"
-            method="POST"
-            data-confirmacao="Tem certeza que deseja cancelar esta inscrição?"
-          >
-            <button type="submit" class="btn btn-danger">
-              Cancelar inscrição
-            </button>
-          </form>
-
-        </div>
-
-      </article>
-
-    <% }) %>
-
+<section>
+  <div class="section-header">
+    <h2>Próximos eventos</h2>
   </div>
 
-<% } else { %>
+  <% if (proximas && proximas.length > 0) { %>
+    <div class="eventos-grid">
+      <% proximas.forEach((inscricao) => { %>
+        <article class="evento-card">
+          <% if (inscricao.imagem_url) { %>
+            <img
+              src="<%= inscricao.imagem_url %>"
+              alt="Capa do evento <%= inscricao.titulo %>"
+              class="evento-card-imagem"
+              loading="lazy"
+            >
+          <% } else { %>
+            <div class="evento-card-imagem-placeholder">
+              EH
+            </div>
+          <% } %>
 
-  <div class="empty-state">
+          <div class="evento-card-conteudo">
+            <div class="badges mb-1">
+              <% if (inscricao.categoria_nome) { %>
+                <span class="badge badge-categoria">
+                  <%= inscricao.categoria_nome %>
+                </span>
+              <% } %>
 
-    <h2>Você ainda não possui inscrições</h2>
+              <span class="badge badge-aberto">
+                Inscrição confirmada
+              </span>
+            </div>
 
-    <p>
-      Explore os eventos disponíveis e escolha algum para participar.
-    </p>
+            <h2>
+              <a href="/eventos/<%= inscricao.evento_id %>">
+                <%= inscricao.titulo %>
+              </a>
+            </h2>
 
-    <a href="/eventos" class="btn btn-primary">
-      Explorar eventos
-    </a>
+            <div class="evento-meta">
+              <span>
+                📅
+                <%= new Date(inscricao.data).toLocaleDateString(
+                  'pt-BR',
+                  { timeZone: 'UTC' }
+                ) %>
+              </span>
 
-  </div>
+              <span>
+                📍 <%= inscricao.local %>
+              </span>
 
+              <span>
+                👤
+                <a
+                  href="/usuarios/<%= inscricao.organizador_id %>"
+                  class="organizador-link"
+                >
+                  <%= inscricao.organizador_nome %>
+                </a>
+              </span>
+            </div>
+
+            <div class="evento-card-acoes">
+              <a
+                href="/eventos/<%= inscricao.evento_id %>"
+                class="btn btn-secondary"
+              >
+                Ver evento
+              </a>
+
+              <form
+                action="/inscricoes/<%= inscricao.inscricao_id %>/cancelar"
+                method="POST"
+                data-confirmacao="Tem certeza que deseja cancelar esta inscrição?"
+              >
+                <button
+                  type="submit"
+                  class="btn btn-danger"
+                >
+                  Cancelar inscrição
+                </button>
+              </form>
+            </div>
+          </div>
+        </article>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div class="empty-state">
+      <h2>Nenhuma inscrição futura</h2>
+
+      <p>
+        Explore os eventos disponíveis e encontre algo para participar.
+      </p>
+
+      <a
+        href="/eventos"
+        class="btn btn-primary"
+      >
+        Explorar eventos
+      </a>
+    </div>
+  <% } %>
+</section>
+
+<% if (anteriores && anteriores.length > 0) { %>
+  <section>
+    <div class="section-header">
+      <h2>Histórico de inscrições</h2>
+    </div>
+
+    <div class="eventos-grid">
+      <% anteriores.forEach((inscricao) => { %>
+        <article class="evento-card">
+          <% if (inscricao.imagem_url) { %>
+            <img
+              src="<%= inscricao.imagem_url %>"
+              alt="Capa do evento <%= inscricao.titulo %>"
+              class="evento-card-imagem"
+              loading="lazy"
+            >
+          <% } else { %>
+            <div class="evento-card-imagem-placeholder">
+              EH
+            </div>
+          <% } %>
+
+          <div class="evento-card-conteudo">
+            <div class="badges mb-1">
+              <% if (inscricao.categoria_nome) { %>
+                <span class="badge badge-categoria">
+                  <%= inscricao.categoria_nome %>
+                </span>
+              <% } %>
+
+              <span class="badge badge-encerrado">
+                Encerrado
+              </span>
+            </div>
+
+            <h2>
+              <a href="/eventos/<%= inscricao.evento_id %>">
+                <%= inscricao.titulo %>
+              </a>
+            </h2>
+
+            <div class="evento-meta">
+              <span>
+                📅
+                <%= new Date(inscricao.data).toLocaleDateString(
+                  'pt-BR',
+                  { timeZone: 'UTC' }
+                ) %>
+              </span>
+
+              <span>
+                📍 <%= inscricao.local %>
+              </span>
+
+              <span>
+                👤
+                <a
+                  href="/usuarios/<%= inscricao.organizador_id %>"
+                  class="organizador-link"
+                >
+                  <%= inscricao.organizador_nome %>
+                </a>
+              </span>
+            </div>
+
+            <div class="evento-card-acoes">
+              <a
+                href="/eventos/<%= inscricao.evento_id %>"
+                class="btn btn-secondary"
+              >
+                Ver evento
+              </a>
+            </div>
+          </div>
+        </article>
+      <% }) %>
+    </div>
+  </section>
 <% } %>
 
 <%- include('partials/footer') %>
