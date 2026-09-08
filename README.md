@@ -1,69 +1,255 @@
 # 🎟️ EventHub
 
-O **EventHub** é uma aplicação web para gerenciamento de eventos e inscrições, desenvolvida com **Node.js, Express, EJS e MySQL**, seguindo a arquitetura **MVC (Model-View-Controller)**.
+O **EventHub** é uma plataforma web para **descobrir, divulgar e participar de eventos**, conectando participantes e organizadores em um único ambiente.
 
-O sistema permite a criação de contas com diferentes perfis de acesso. Organizadores podem gerenciar seus próprios eventos, enquanto participantes podem visualizar os eventos disponíveis e realizar suas inscrições.
+Desenvolvido com **Node.js, Express, EJS e MySQL**, o projeto utiliza a arquitetura **MVC (Model-View-Controller)** para separar as responsabilidades da aplicação e facilitar sua manutenção.
 
-Este projeto surgiu inicialmente como uma atividade acadêmica e posteriormente foi aprimorado e personalizado para integrar meu portfólio de desenvolvimento.
+No EventHub, uma única conta pode participar de eventos e também publicar seus próprios eventos. Ao criar um evento, o usuário passa a ser o organizador daquela publicação, sem a necessidade de escolher previamente entre contas de participante ou organizador.
+
+O projeto foi desenvolvido em uma **atividade voltada à construção de portfólio**, com o objetivo de aplicar na prática conceitos de desenvolvimento web, arquitetura MVC, autenticação, banco de dados, validação, upload de arquivos e deploy.
+
+---
+
+## 📸 Demonstração
+
+### Explorar eventos
+
+<!-- Adicionar screenshot da página Explorar eventos após o deploy final -->
+
+### Detalhes de um evento
+
+<!-- Adicionar screenshot da página de detalhes após o deploy final -->
+
+### Perfil público
+
+<!-- Adicionar screenshot de um perfil público após o deploy final -->
+
+### Recomendações personalizadas
+
+<!-- Adicionar screenshot da página "Para você" após o deploy final -->
+
+---
 
 ## ✨ Funcionalidades
 
-### 👤 Usuários
+### 👤 Contas e perfis
+
 - Cadastro de usuários
 - Login e logout
-- Senhas armazenadas de forma segura utilizando bcrypt
-- Sessões de autenticação
-- Perfis distintos de **organizador** e **participante**
+- Autenticação baseada em sessão
+- Senhas protegidas com hash utilizando bcrypt
+- Perfil pessoal editável
+- Perfil público
+- Foto ou logo de perfil
+- Upload de imagem pelo dispositivo ou uso de URL
+- Biografia
+- Cidade ou região
+- Links opcionais para site e Instagram
+- Visualização dos eventos organizados pelo usuário
 
-### 📅 Organizadores
+### 📅 Eventos
+
 - Criação de eventos
 - Edição dos próprios eventos
 - Exclusão dos próprios eventos
+- Página de detalhes de cada evento
+- Organização dos eventos por categorias
+- Imagem de capa por upload ou URL
+- Definição de data e local
+- Eventos gratuitos e pagos
+- Limite opcional de vagas para eventos gratuitos
+- Preço para eventos pagos
+- Link externo para compra de ingressos
+- Cupom ou benefício opcional
 - Validação das informações cadastradas
-- Bloqueio de criação de eventos com datas passadas
+- Bloqueio de eventos com datas passadas
 
-### 🎫 Participantes
-- Visualização dos eventos disponíveis
-- Visualização dos detalhes de cada evento
-- Inscrição em eventos
+### 🎫 Inscrições
+
+- Inscrição em eventos gratuitos
 - Prevenção de inscrições duplicadas
+- Bloqueio de inscrição no próprio evento
+- Controle de vagas disponíveis
 - Visualização das próprias inscrições
 - Cancelamento de inscrições
+- Separação entre eventos futuros e histórico
+
+### 🔎 Exploração
+
+- Pesquisa de eventos
+- Filtro por categoria
+- Filtro por localização
+- Filtro por período
+- Filtro entre eventos gratuitos e pagos
+- Exibição de eventos disponíveis
+
+### ❤️ Favoritos e interesses
+
+- Adição e remoção de eventos favoritos
+- Área de eventos favoritados
+- Recurso **"Quero mais como este"**
+- Registro das categorias de interesse do usuário
+- Área para visualização dos interesses
+
+### ✨ Recomendações personalizadas
+
+A área **"Para você"** utiliza as categorias de interesse do usuário para recomendar eventos relacionados às suas preferências.
+
+As recomendações consideram eventos futuros pertencentes às categorias de interesse e excluem eventos organizados pelo próprio usuário.
+
+---
 
 ## 🛠️ Tecnologias utilizadas
 
 - **Node.js** — ambiente de execução JavaScript
-- **Express** — servidor e gerenciamento de rotas
+- **Express** — servidor web e gerenciamento de rotas
 - **EJS** — renderização das páginas
 - **MySQL** — banco de dados relacional
 - **mysql2** — integração entre Node.js e MySQL
-- **bcryptjs** — criptografia das senhas
+- **bcryptjs** — hash de senhas
 - **express-session** — gerenciamento de sessões
+- **express-mysql-session** — persistência das sessões no MySQL
 - **express-validator** — validação dos dados
+- **Multer** — processamento dos uploads de imagens
+- **Cloudinary** — armazenamento das imagens de perfis e eventos
 - **dotenv** — gerenciamento das variáveis de ambiente
-- **HTML5 e CSS3** — estrutura e estilização da interface
+- **HTML5** — estrutura das páginas
+- **CSS3** — estilização e responsividade
+- **JavaScript** — interações no frontend
 
-## 🏗️ Arquitetura
+---
 
-O projeto utiliza o padrão **MVC**, separando as responsabilidades da aplicação:
+## 🏗️ Estrutura do projeto
+
+O EventHub segue a arquitetura **MVC (Model-View-Controller)**, mantendo separadas as responsabilidades relacionadas aos dados, controle das requisições e interface.
 
 ```text
 eventhub-mvc/
 │
-├── config/          # Configuração do banco de dados
-├── controllers/     # Regras e controle das requisições
-├── middlewares/     # Autenticação e validações
-├── models/          # Comunicação com o banco de dados
-├── public/          # CSS, JavaScript e imagens
-├── routes/          # Rotas da aplicação
-├── views/           # Páginas EJS
+├── config/
+│   └── database.js
 │
+├── controllers/
+│   ├── authController.js
+│   ├── eventoController.js
+│   ├── favoritoController.js
+│   ├── inscricaoController.js
+│   ├── interesseController.js
+│   └── usuarioController.js
+│
+├── database/
+│   ├── schema.sql
+│   └── seed.sql
+│
+├── middlewares/
+│   ├── authMiddleware.js
+│   └── validationMiddleware.js
+│
+├── models/
+│   ├── Categoria.js
+│   ├── Evento.js
+│   ├── Favorito.js
+│   ├── Inscricao.js
+│   ├── Interesse.js
+│   └── Usuario.js
+│
+├── public/
+│   ├── css/
+│   │   └── style.css
+│   ├── imagens/
+│   │   └── logo.png
+│   └── js/
+│       └── main.js
+│
+├── routes/
+│   ├── authRoutes.js
+│   ├── eventoRoutes.js
+│   ├── favoritoRoutes.js
+│   ├── inscricaoRoutes.js
+│   ├── interesseRoutes.js
+│   └── usuarioRoutes.js
+│
+├── views/
+│   ├── auth/
+│   │   ├── cadastro.ejs
+│   │   └── login.ejs
+│   │
+│   ├── eventos/
+│   │   ├── criar.ejs
+│   │   ├── detalhes.ejs
+│   │   ├── editar.ejs
+│   │   ├── index.ejs
+│   │   ├── meus-eventos.ejs
+│   │   └── para-voce.ejs
+│   │
+│   ├── favoritos/
+│   │   └── index.ejs
+│   │
+│   ├── interesses/
+│   │   └── index.ejs
+│   │
+│   ├── partials/
+│   │   ├── evento-card.ejs
+│   │   ├── footer.ejs
+│   │   └── header.ejs
+│   │
+│   ├── perfil/
+│   │   ├── editar.ejs
+│   │   ├── meu-perfil.ejs
+│   │   └── publico.ejs
+│   │
+│   ├── 404.ejs
+│   ├── erro.ejs
+│   └── minhas-inscricoes.ejs
+│
+├── .env.example
+├── .gitignore
 ├── app.js
+├── package-lock.json
 ├── package.json
-└── .env.example
+└── README.md
 ```
 
-## 🚀 Como executar o projeto
+### Organização
+
+- **Models:** comunicação com o banco de dados
+- **Views:** interface renderizada com EJS
+- **Controllers:** controle das requisições e regras da aplicação
+- **Routes:** definição dos endpoints
+- **Middlewares:** autenticação e validação
+- **Config:** configuração da conexão com o banco
+- **Database:** scripts de criação e dados iniciais
+- **Public:** CSS, JavaScript e imagens estáticas
+
+---
+
+## 🗄️ Banco de dados
+
+O EventHub utiliza **MySQL** para persistência dos dados.
+
+As principais entidades da aplicação são:
+
+- Usuários
+- Eventos
+- Categorias
+- Inscrições
+- Favoritos
+- Interesses
+
+Entre as principais relações e regras implementadas:
+
+- Um usuário pode organizar vários eventos
+- Cada evento possui um usuário organizador
+- Cada evento pertence a uma categoria
+- Um usuário pode se inscrever em diferentes eventos
+- Uma mesma inscrição não pode ser realizada duas vezes para o mesmo evento
+- Um usuário não pode se inscrever no próprio evento
+- Usuários podem favoritar diferentes eventos
+- Usuários podem registrar diferentes categorias de interesse
+
+---
+
+## 🚀 Como executar
 
 ### 1. Clone o repositório
 
@@ -71,7 +257,7 @@ eventhub-mvc/
 git clone https://github.com/ariannedemattos-aam/eventhub-mvc.git
 ```
 
-Entre na pasta:
+Acesse a pasta:
 
 ```bash
 cd eventhub-mvc
@@ -87,8 +273,6 @@ npm install
 
 Crie um arquivo `.env` na raiz do projeto utilizando o `.env.example` como referência.
 
-Exemplo:
-
 ```env
 PORT=3000
 
@@ -99,20 +283,31 @@ DB_PASSWORD=sua_senha
 DB_NAME=eventhub
 
 SESSION_SECRET=sua_chave_secreta
+
+CLOUDINARY_CLOUD_NAME=seu_cloud_name
+CLOUDINARY_API_KEY=sua_api_key
+CLOUDINARY_API_SECRET=seu_api_secret
+
 NODE_ENV=development
 ```
 
-> O arquivo `.env` não deve ser enviado para o GitHub, pois pode conter informações sensíveis.
+> O arquivo `.env` contém informações sensíveis e não deve ser enviado ao repositório.
 
 ### 4. Configure o banco de dados
 
-Crie um banco MySQL chamado `eventhub` e as tabelas necessárias para usuários, eventos e inscrições.
+Os scripts SQL estão disponíveis em:
 
-As principais relações utilizadas são:
+```text
+database/
+├── schema.sql
+└── seed.sql
+```
 
-- Um organizador pode criar vários eventos.
-- Um participante pode se inscrever em vários eventos.
-- Um usuário não pode realizar duas inscrições no mesmo evento.
+Para criar uma nova estrutura do banco, execute o `schema.sql`.
+
+O `seed.sql` pode ser utilizado para inserir os dados iniciais.
+
+> **Atenção:** o `schema.sql` é destinado à criação de uma nova estrutura e pode remover estruturas existentes. Não o execute sobre um banco com dados que precisam ser preservados.
 
 ### 5. Inicie a aplicação
 
@@ -120,30 +315,72 @@ As principais relações utilizadas são:
 npm start
 ```
 
-Depois, acesse no navegador:
+Por padrão, a aplicação estará disponível em:
 
 ```text
 http://localhost:3000
 ```
 
-## 🔐 Segurança
+---
 
-O projeto possui algumas medidas básicas de segurança e controle de acesso:
+## 🔐 Segurança e validação
 
-- Hash de senhas utilizando bcrypt
+Entre as medidas implementadas na aplicação estão:
+
+- Hash de senhas com bcrypt
 - Autenticação baseada em sessão
-- Validação de dados no backend
-- Controle de acesso de acordo com o tipo de usuário
-- Proteção das operações de edição e exclusão de eventos
-- Proteção das inscrições pertencentes a cada participante
-- Variáveis sensíveis armazenadas fora do código-fonte
+- Persistência das sessões no MySQL
+- Cookies de sessão `httpOnly`
+- Cookies seguros no ambiente de produção
+- Validação dos dados recebidos pelo backend
+- Controle de autorização para edição e exclusão de eventos
+- Proteção das operações vinculadas ao usuário autenticado
+- Prevenção de inscrições duplicadas
+- Variáveis sensíveis mantidas fora do código-fonte
+- Configuração SSL para conexão com o banco em produção
+- Validação de formato e limite de tamanho dos uploads
 
-## 💜 Identidade visual
+Os uploads de perfil e capa de eventos aceitam imagens **JPG, PNG e WEBP de até 5 MB**.
 
-A interface do EventHub foi personalizada com uma identidade visual baseada em tons de roxo, utilizando layout responsivo, cards, gradientes e componentes desenvolvidos especialmente para o projeto.
+---
+
+## 🎨 Interface
+
+A interface do EventHub utiliza uma identidade visual baseada em tons de roxo e foi desenvolvida com CSS próprio.
+
+O layout inclui:
+
+- Cards de eventos
+- Gradientes
+- Formulários e componentes reutilizáveis
+- Feedback visual para ações do usuário
+- Navegação entre as diferentes áreas da plataforma
+- Adaptação do layout para diferentes tamanhos de tela
+
+A responsividade utiliza breakpoints específicos para reorganização da interface em telas menores.
+
+---
+
+## ☁️ Deploy
+
+O EventHub possui deploy utilizando **Render**, com banco de dados **MySQL hospedado no Aiven** e armazenamento de imagens no **Cloudinary**.
+
+<!-- Atualizar o link e esta seção após o deploy da versão final -->
+
+**Aplicação:** `link da versão final após o deploy`
+
+---
+
+## 🎯 Sobre o projeto
+
+O EventHub foi desenvolvido em uma **atividade voltada à criação de projetos para portfólio**, aplicando conceitos estudados em criação de sites em uma aplicação completa.
+
+O projeto reúne autenticação, arquitetura MVC, persistência de dados, relacionamentos entre entidades, controle de acesso, filtros, recomendações, upload de arquivos e integração com serviços externos.
+
+---
 
 ## 👩‍💻 Autora
 
 **Arianne Arruda de Mattos**
 
-Projeto desenvolvido para fins acadêmicos e de portfólio.
+Projeto desenvolvido para portfólio de desenvolvimento web.
