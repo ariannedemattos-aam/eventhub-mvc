@@ -3,18 +3,22 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const session = require('express-session');
+const MySQLStore = require('express-mysql-session')(session);
 
 const authRoutes = require('./routes/authRoutes');
 const eventoRoutes = require('./routes/eventoRoutes');
 const inscricaoRoutes = require('./routes/inscricaoRoutes');
+const usuarioRoutes = require('./routes/usuarioRoutes');
+const favoritoRoutes = require('./routes/favoritoRoutes');
+const interesseRoutes = require('./routes/interesseRoutes');
 
 const app = express();
 
 const PORT = process.env.PORT || 3000;
 
 /*
- * Render usa proxy reverso HTTPS.
- * Sem isso, cookies secure podem não funcionar corretamente.
+ * Render utiliza proxy reverso HTTPS.
+ * Isso permite o funcionamento correto de cookies secure em produção.
  */
 if (process.env.NODE_ENV === 'production') {
   app.set('trust proxy', 1);
@@ -47,13 +51,49 @@ app.use(
 );
 
 /*
+ * Armazenamento persistente das sessões no MySQL.
+ */
+const sessionStoreConfig = {
+  host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT),
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+
+  createDatabaseTable: true,
+
+  expiration:
+    1000 * 60 * 60 * 2,
+
+  clearExpired: true,
+
+  checkExpirationInterval:
+    1000 * 60 * 15
+};
+
+if (process.env.NODE_ENV === 'production') {
+  sessionStoreConfig.ssl = {
+    rejectUnauthorized: false
+  };
+}
+
+const sessionStore = new MySQLStore(
+  sessionStoreConfig
+);
+
+/*
  * Sessão
  */
 app.use(
   session({
+    name: 'eventhub.sid',
+
     secret: process.env.SESSION_SECRET,
 
+    store: sessionStore,
+
     resave: false,
+
     saveUninitialized: false,
 
     cookie: {
@@ -99,6 +139,9 @@ app.use(
 );
 
 app.use(inscricaoRoutes);
+app.use(usuarioRoutes);
+app.use(favoritoRoutes);
+app.use(interesseRoutes);
 
 /*
  * 404
@@ -128,8 +171,12 @@ app.use((err, req, res, next) => {
 /*
  * Servidor
  */
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(
-    `EventHub rodando na porta ${PORT}`
-  );
-});
+app.listen(
+  PORT,
+  '0.0.0.0',
+  () => {
+    console.log(
+      `EventHub rodando na porta ${PORT}`
+    );
+  }
+);

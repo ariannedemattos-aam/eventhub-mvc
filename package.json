@@ -1,7 +1,7 @@
 {
   "name": "eventhub-mvc",
   "version": "1.0.0",
-  "description": "Sistema de gestão de eventos e inscrições desenvolvido em Node.js com arquitetura MVC.",
+  "description": "Plataforma para descobrir, divulgar e participar de eventos, desenvolvida em Node.js com arquitetura MVC.",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
@@ -13,17 +13,21 @@
     "mvc",
     "ejs",
     "mysql",
-    "eventos"
+    "eventos",
+    "portfolio"
   ],
   "author": "Arianne Arruda de Mattos",
   "license": "MIT",
   "dependencies": {
     "bcryptjs": "^3.0.3",
+    "cloudinary": "^2.11.0",
     "dotenv": "^17.4.2",
     "ejs": "^6.0.1",
     "express": "^5.2.1",
+    "express-mysql-session": "^3.0.3",
     "express-session": "^1.19.0",
     "express-validator": "^7.3.2",
+    "multer": "^2.3.0",
     "mysql2": "^3.24.3"
   }
 }
