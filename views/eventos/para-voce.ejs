@@ -1,0 +1,50 @@
+<%- include('../partials/header') %>
+
+<section class="page-header">
+  <h1>✨ Para você</h1>
+
+  <p>
+    Eventos recomendados com base nas categorias que você marcou como interesse.
+  </p>
+</section>
+
+<div class="actions mb-3">
+  <a
+    href="/interesses"
+    class="btn btn-secondary"
+  >
+    Gerenciar meus interesses
+  </a>
+
+  <a
+    href="/eventos"
+    class="btn btn-outline"
+  >
+    Explorar todos
+  </a>
+</div>
+
+<% if (eventos && eventos.length > 0) { %>
+  <div class="eventos-grid">
+    <% eventos.forEach((evento) => { %>
+      <%- include('../partials/evento-card', { evento }) %>
+    <% }) %>
+  </div>
+<% } else { %>
+  <div class="empty-state">
+    <h2>Ainda não temos recomendações para você</h2>
+
+    <p>
+      Escolha algumas categorias de interesse para personalizar esta área.
+    </p>
+
+    <a
+      href="/interesses"
+      class="btn btn-primary"
+    >
+      Escolher interesses
+    </a>
+  </div>
+<% } %>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,68 @@
+<%- include('../partials/header') %>
+
+<section class="page-header">
+  <h1>Meus interesses</h1>
+
+  <p>
+    Escolha as categorias que você gostaria de encontrar no EventHub.
+  </p>
+</section>
+
+<div class="alert alert-info">
+  Suas escolhas são usadas para montar a área
+  <strong>Para você</strong>.
+</div>
+
+<div class="interesses-grid">
+  <% categorias.forEach((categoria) => { %>
+    <%
+      const selecionada =
+        idsSelecionados.includes(categoria.id);
+    %>
+
+    <article
+      class="interesse-card <%= selecionada ? 'selecionado' : '' %>"
+    >
+      <div>
+        <strong><%= categoria.nome %></strong>
+      </div>
+
+      <% if (selecionada) { %>
+        <form
+          action="/interesses/<%= categoria.id %>/remover"
+          method="POST"
+        >
+          <button
+            type="submit"
+            class="btn btn-secondary"
+          >
+            ✓ Selecionado
+          </button>
+        </form>
+      <% } else { %>
+        <form
+          action="/interesses/<%= categoria.id %>/adicionar"
+          method="POST"
+        >
+          <button
+            type="submit"
+            class="btn btn-outline"
+          >
+            Adicionar
+          </button>
+        </form>
+      <% } %>
+    </article>
+  <% }) %>
+</div>
+
+<div class="actions mt-3">
+  <a
+    href="/eventos/para-voce"
+    class="btn btn-primary"
+  >
+    ✨ Ver recomendações
+  </a>
+</div>
+
+<%- include('../partials/footer') %>
