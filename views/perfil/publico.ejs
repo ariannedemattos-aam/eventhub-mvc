@@ -1,0 +1,91 @@
+<%- include('../partials/header') %>
+
+<section class="perfil-header">
+  <% if (perfil.foto_url) { %>
+    <img
+      src="<%= perfil.foto_url %>"
+      alt="Foto de <%= perfil.nome %>"
+      class="perfil-avatar"
+    >
+  <% } else { %>
+    <div class="perfil-avatar-placeholder">
+      <%= perfil.nome.charAt(0).toUpperCase() %>
+    </div>
+  <% } %>
+
+  <div class="perfil-info">
+    <h1><%= perfil.nome %></h1>
+
+    <% if (perfil.cidade) { %>
+      <p class="perfil-local">
+        📍 <%= perfil.cidade %>
+      </p>
+    <% } %>
+
+    <% if (perfil.bio) { %>
+      <p class="perfil-bio">
+        <%= perfil.bio %>
+      </p>
+    <% } %>
+
+    <div class="perfil-links">
+      <% if (perfil.site) { %>
+        <a
+          href="<%= perfil.site %>"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          🌐 Site
+        </a>
+      <% } %>
+
+      <% if (perfil.instagram) { %>
+        <a
+          href="<%= perfil.instagram %>"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          📷 Instagram
+        </a>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-header">
+    <h2>Próximos eventos</h2>
+  </div>
+
+  <% if (proximos && proximos.length > 0) { %>
+    <div class="eventos-grid">
+      <% proximos.forEach((evento) => { %>
+        <%- include('../partials/evento-card', { evento }) %>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div class="empty-state">
+      <h2>Nenhum evento futuro</h2>
+
+      <p>
+        Este perfil não possui eventos futuros publicados.
+      </p>
+    </div>
+  <% } %>
+</section>
+
+<% if (anteriores && anteriores.length > 0) { %>
+  <section>
+    <div class="section-header">
+      <h2>Eventos anteriores</h2>
+    </div>
+
+    <div class="eventos-grid">
+      <% anteriores.forEach((evento) => { %>
+        <%- include('../partials/evento-card', { evento }) %>
+      <% }) %>
+    </div>
+  </section>
+<% } %>
+
+<%- include('../partials/footer') %>s

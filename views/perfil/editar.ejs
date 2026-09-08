@@ -1,0 +1,160 @@
+<%- include('../partials/header') %>
+
+<section class="page-header">
+  <h1>Editar perfil</h1>
+  <p>
+    Atualize as informações exibidas no seu perfil do EventHub.
+  </p>
+</section>
+
+<div class="form-container">
+  <% if (erros && erros.length > 0) { %>
+    <div class="alert alert-error">
+      <% erros.forEach((erro) => { %>
+        <p><%= erro.msg %></p>
+      <% }) %>
+    </div>
+  <% } %>
+
+  <form
+    action="/perfil/editar"
+    method="POST"
+    enctype="multipart/form-data"
+  >
+    <div class="form-group">
+      <label for="nome">
+        Nome
+      </label>
+
+      <input
+        type="text"
+        id="nome"
+        name="nome"
+        class="form-control"
+        minlength="3"
+        maxlength="100"
+        value="<%= perfil.nome || '' %>"
+        required
+      >
+    </div>
+
+    <div class="form-group">
+      <label for="foto">
+        Foto ou logo do dispositivo
+      </label>
+
+      <input
+        type="file"
+        id="foto"
+        name="foto"
+        class="form-control"
+        accept="image/jpeg,image/png,image/webp"
+      >
+
+      <small class="form-help">
+        JPG, PNG ou WEBP. Tamanho máximo: 5 MB.
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label for="foto_url">
+        Ou use uma URL de imagem
+      </label>
+
+      <input
+        type="url"
+        id="foto_url"
+        name="foto_url"
+        class="form-control"
+        placeholder="https://..."
+        value="<%= perfil.foto_url || '' %>"
+      >
+
+      <small class="form-help">
+        Se você escolher uma imagem do dispositivo, ela terá prioridade sobre esta URL.
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label for="bio">
+        Sobre você
+      </label>
+
+      <textarea
+        id="bio"
+        name="bio"
+        class="form-control"
+        maxlength="500"
+        placeholder="Conte um pouco sobre você ou sua organização."
+      ><%= perfil.bio || '' %></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="cidade">
+        Cidade ou região
+      </label>
+
+      <input
+        type="text"
+        id="cidade"
+        name="cidade"
+        class="form-control"
+        maxlength="100"
+        placeholder="Ex.: Gramado - RS"
+        value="<%= perfil.cidade || '' %>"
+      >
+    </div>
+
+    <div class="form-group">
+      <label for="site">
+        Site
+      </label>
+
+      <input
+        type="url"
+        id="site"
+        name="site"
+        class="form-control"
+        placeholder="https://..."
+        value="<%= perfil.site || '' %>"
+      >
+    </div>
+
+    <div class="form-group">
+      <label for="instagram">
+        Instagram
+      </label>
+
+      <input
+        type="url"
+        id="instagram"
+        name="instagram"
+        class="form-control"
+        placeholder="https://instagram.com/seuperfil"
+        value="<%= perfil.instagram || '' %>"
+      >
+
+      <small class="form-help">
+        Informe o link completo do perfil.
+      </small>
+    </div>
+
+    <div class="actions">
+      <button
+        type="submit"
+        class="btn btn-primary"
+      >
+        Salvar perfil
+      </button>
+
+      <a
+        href="/perfil"
+        class="btn btn-secondary"
+      >
+        Cancelar
+      </a>
+    </div>
+  </form>
+</div>
+
+<%- include('../partials/footer') %>

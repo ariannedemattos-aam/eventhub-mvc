@@ -1,0 +1,142 @@
+<%- include('../partials/header') %>
+
+<section class="perfil-header">
+  <% if (perfil.foto_url) { %>
+    <img
+      src="<%= perfil.foto_url %>"
+      alt="Foto de <%= perfil.nome %>"
+      class="perfil-avatar"
+    >
+  <% } else { %>
+    <div class="perfil-avatar-placeholder">
+      <%= perfil.nome.charAt(0).toUpperCase() %>
+    </div>
+  <% } %>
+
+  <div class="perfil-info">
+    <h1><%= perfil.nome %></h1>
+
+    <% if (perfil.cidade) { %>
+      <p class="perfil-local">
+        📍 <%= perfil.cidade %>
+      </p>
+    <% } %>
+
+    <% if (perfil.bio) { %>
+      <p class="perfil-bio">
+        <%= perfil.bio %>
+      </p>
+    <% } else { %>
+      <p class="text-muted">
+        Você ainda não adicionou uma bio.
+      </p>
+    <% } %>
+
+    <div class="perfil-links">
+      <% if (perfil.site) { %>
+        <a
+          href="<%= perfil.site %>"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          🌐 Site
+        </a>
+      <% } %>
+
+      <% if (perfil.instagram) { %>
+        <a
+          href="<%= perfil.instagram %>"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          📷 Instagram
+        </a>
+      <% } %>
+    </div>
+
+    <div class="perfil-acoes actions">
+      <a
+        href="/perfil/editar"
+        class="btn btn-primary"
+      >
+        Editar perfil
+      </a>
+
+      <a
+        href="/eventos/meus-eventos"
+        class="btn btn-secondary"
+      >
+        Meus eventos
+      </a>
+
+      <a
+        href="/minhas-inscricoes"
+        class="btn btn-secondary"
+      >
+        Minhas inscrições
+      </a>
+
+      <a
+        href="/favoritos"
+        class="btn btn-secondary"
+      >
+        Favoritos
+      </a>
+
+      <a
+        href="/interesses"
+        class="btn btn-secondary"
+      >
+        Meus interesses
+      </a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-header">
+    <h2>Próximos eventos que organizei</h2>
+  </div>
+
+  <% if (proximos && proximos.length > 0) { %>
+    <div class="eventos-grid">
+      <% proximos.forEach((evento) => { %>
+        <%- include('../partials/evento-card', {
+          evento,
+          exibirEdicao: true
+        }) %>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div class="empty-state">
+      <h2>Nenhum evento futuro</h2>
+
+      <p>
+        Quando você criar um evento, ele aparecerá aqui.
+      </p>
+
+      <a
+        href="/eventos/novo"
+        class="btn btn-primary"
+      >
+        Criar evento
+      </a>
+    </div>
+  <% } %>
+</section>
+
+<% if (anteriores && anteriores.length > 0) { %>
+  <section>
+    <div class="section-header">
+      <h2>Histórico de eventos</h2>
+    </div>
+
+    <div class="eventos-grid">
+      <% anteriores.forEach((evento) => { %>
+        <%- include('../partials/evento-card', { evento }) %>
+      <% }) %>
+    </div>
+  </section>
+<% } %>
+
+<%- include('../partials/footer') %>
