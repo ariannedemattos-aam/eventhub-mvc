@@ -926,7 +926,7 @@ textarea.form-control {
   display: grid;
 
   grid-template-columns:
-    repeat(auto-fit, minmax(180px, 1fr));
+    repeat(auto-fit, minmax(240px, 1fr));
 
   gap: 15px;
 }
@@ -945,7 +945,13 @@ textarea.form-control {
   align-items: center;
   justify-content: space-between;
 
-  gap: 10px;
+  gap: 14px;
+
+  min-width: 0;
+}
+
+.interesse-card .btn {
+  flex-shrink: 0;
 }
 
 .interesse-card.selecionado {
