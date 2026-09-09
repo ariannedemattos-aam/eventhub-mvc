@@ -1,6 +1,7 @@
 const express = require('express');
 
-const authController = require('../controllers/authController');
+const authController =
+  require('../controllers/authController');
 
 const {
   validarCadastro,
@@ -29,6 +30,26 @@ router.post(
   '/cadastro',
   validarCadastro,
   authController.cadastrar
+);
+
+router.get(
+  '/esqueci-senha',
+  authController.exibirEsqueciSenha
+);
+
+router.post(
+  '/esqueci-senha',
+  authController.solicitarRecuperacao
+);
+
+router.get(
+  '/redefinir-senha/:token',
+  authController.exibirRedefinirSenha
+);
+
+router.post(
+  '/redefinir-senha/:token',
+  authController.redefinirSenha
 );
 
 router.post(

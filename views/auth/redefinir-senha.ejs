@@ -1,0 +1,94 @@
+<%- include('../partials/header') %>
+
+<section class="auth-page">
+  <div class="auth-card">
+
+    <h1>Nova senha 🔐</h1>
+
+    <p class="subtitle">
+      Escolha uma nova senha para sua conta.
+    </p>
+
+    <% if (erro) { %>
+      <div class="alert alert-error">
+        <%= erro %>
+      </div>
+    <% } %>
+
+    <% if (sucesso) { %>
+      <div class="alert alert-success">
+        <%= sucesso %>
+      </div>
+    <% } %>
+
+    <% if (token) { %>
+
+      <form
+        action="/redefinir-senha/<%= token %>"
+        method="POST"
+      >
+
+        <div class="form-group">
+          <label for="senha">
+            Nova senha
+          </label>
+
+          <input
+            type="password"
+            id="senha"
+            name="senha"
+            class="form-control"
+            placeholder="Digite sua nova senha"
+            minlength="6"
+            required
+            autocomplete="new-password"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="confirmarSenha">
+            Confirmar nova senha
+          </label>
+
+          <input
+            type="password"
+            id="confirmarSenha"
+            name="confirmarSenha"
+            class="form-control"
+            placeholder="Digite novamente"
+            minlength="6"
+            required
+            autocomplete="new-password"
+          >
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-primary btn-block"
+        >
+          Redefinir senha
+        </button>
+
+      </form>
+
+    <% } else { %>
+
+      <a
+        href="/esqueci-senha"
+        class="btn btn-primary btn-block"
+      >
+        Solicitar novo link
+      </a>
+
+    <% } %>
+
+    <p class="auth-footer">
+      <a href="/login">
+        Voltar para o login
+      </a>
+    </p>
+
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

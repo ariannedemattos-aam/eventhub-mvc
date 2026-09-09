@@ -27,6 +27,9 @@ CREATE TABLE usuarios (
     site VARCHAR(255) NULL,
     instagram VARCHAR(255) NULL,
 
+    reset_token_hash VARCHAR(255) NULL,
+    reset_token_expira DATETIME NULL,
+
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     atualizado_em TIMESTAMP
         DEFAULT CURRENT_TIMESTAMP

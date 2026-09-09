@@ -3,10 +3,11 @@
 <section class="auth-page">
   <div class="auth-card">
 
-    <h1>Bem-vindo de volta 💜</h1>
+    <h1>Recuperar senha 🔐</h1>
 
     <p class="subtitle">
-      Entre na sua conta para continuar no EventHub.
+      Informe o e-mail da sua conta para receber
+      um link de redefinição de senha.
     </p>
 
     <% if (erro) { %>
@@ -21,7 +22,7 @@
       </div>
     <% } %>
 
-    <form action="/login" method="POST">
+    <form action="/esqueci-senha" method="POST">
 
       <div class="form-group">
         <label for="email">E-mail</label>
@@ -37,38 +38,18 @@
         >
       </div>
 
-      <div class="form-group">
-        <label for="senha">Senha</label>
-
-        <input
-          type="password"
-          id="senha"
-          name="senha"
-          class="form-control"
-          placeholder="Digite sua senha"
-          required
-          autocomplete="current-password"
-        >
-
-        <div class="mt-1">
-          <a href="/esqueci-senha">
-            Esqueceu sua senha?
-          </a>
-        </div>
-      </div>
-
       <button
         type="submit"
         class="btn btn-primary btn-block"
       >
-        Entrar
+        Enviar link de recuperação
       </button>
 
     </form>
 
     <p class="auth-footer">
-      Ainda não possui uma conta?
-      <a href="/cadastro">Cadastre-se</a>
+      Lembrou sua senha?
+      <a href="/login">Voltar para o login</a>
     </p>
 
   </div>

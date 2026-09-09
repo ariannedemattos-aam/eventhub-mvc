@@ -87,3 +87,53 @@ exports.atualizarPerfil = async (
 
   return resultado.affectedRows > 0;
 };
+
+exports.salvarTokenRecuperacao = async (
+  id,
+  tokenHash,
+  expiracao
+) => {
+  const [resultado] = await pool.execute(
+    `
+      UPDATE usuarios
+      SET
+        reset_token_hash = ?,
+        reset_token_expira = ?
+      WHERE id = ?
+    `,
+    [tokenHash, expiracao, id]
+  );
+
+  return resultado.affectedRows > 0;
+};
+
+exports.buscarPorTokenRecuperacao = async (tokenHash) => {
+  const [rows] = await pool.execute(
+    `
+      SELECT *
+      FROM usuarios
+      WHERE reset_token_hash = ?
+        AND reset_token_expira > NOW()
+      LIMIT 1
+    `,
+    [tokenHash]
+  );
+
+  return rows[0] || null;
+};
+
+exports.redefinirSenha = async (id, senhaHash) => {
+  const [resultado] = await pool.execute(
+    `
+      UPDATE usuarios
+      SET
+        senha = ?,
+        reset_token_hash = NULL,
+        reset_token_expira = NULL
+      WHERE id = ?
+    `,
+    [senhaHash, id]
+  );
+
+  return resultado.affectedRows > 0;
+};
