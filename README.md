@@ -2,7 +2,7 @@
 
 O **EventHub** é uma plataforma web para **descobrir, divulgar e participar de eventos**, conectando participantes e organizadores em um único ambiente.
 
-Desenvolvido com **Node.js, Express, EJS e MySQL**, o projeto utiliza a arquitetura **MVC (Model-View-Controller)** para separar as responsabilidades da aplicação e facilitar sua manutenção.
+Desenvolvido com **Node.js, Express, EJS e MySQL**, o projeto utiliza a arquitetura **MVC (Model-View-Controller)** para separar as responsabilidades da aplicação e facilitar sua organização e manutenção.
 
 No EventHub, uma única conta pode participar de eventos e também publicar seus próprios eventos. Ao criar um evento, o usuário passa a ser o organizador daquela publicação, sem a necessidade de escolher previamente entre contas de participante ou organizador.
 
@@ -14,19 +14,29 @@ O projeto foi desenvolvido em uma **atividade voltada à construção de portfó
 
 ### Explorar eventos
 
-<!-- Adicionar screenshot da página Explorar eventos após o deploy final -->
+A página principal permite descobrir eventos e utilizar filtros por categoria, localização, período e tipo de ingresso.
+
+![Exploração de eventos no EventHub](docs/screenshots/explorar-eventos.png)
 
 ### Detalhes de um evento
 
-<!-- Adicionar screenshot da página de detalhes após o deploy final -->
+Cada evento possui uma página própria com suas principais informações. Em eventos pagos, também podem ser apresentados preço, cupom ou benefício, quantidade de vagas vinculadas ao benefício e direcionamento para a plataforma externa responsável pela venda dos ingressos.
 
-### Perfil público
+![Detalhes de um evento no EventHub](docs/screenshots/detalhes-evento.png)
 
-<!-- Adicionar screenshot de um perfil público após o deploy final -->
+### Perfil
+
+Os usuários podem personalizar seus perfis com foto, biografia e localização, além de visualizar os eventos que organizam.
+
+![Perfil de usuário no EventHub](docs/screenshots/perfil.png)
 
 ### Recomendações personalizadas
 
-<!-- Adicionar screenshot da página "Para você" após o deploy final -->
+A área **"Para você"** utiliza os interesses registrados pelo usuário para apresentar eventos relacionados às categorias de que ele gosta.
+
+![Recomendações personalizadas do EventHub](docs/screenshots/para-voce.png)
+
+> Os perfis e eventos apresentados nas imagens são dados fictícios criados exclusivamente para demonstração do projeto.
 
 ---
 
@@ -38,6 +48,7 @@ O projeto foi desenvolvido em uma **atividade voltada à construção de portfó
 - Login e logout
 - Autenticação baseada em sessão
 - Senhas protegidas com hash utilizando bcrypt
+- Recuperação e redefinição segura de senha no ambiente local
 - Perfil pessoal editável
 - Perfil público
 - Foto ou logo de perfil
@@ -53,26 +64,34 @@ O projeto foi desenvolvido em uma **atividade voltada à construção de portfó
 - Edição dos próprios eventos
 - Exclusão dos próprios eventos
 - Página de detalhes de cada evento
-- Organização dos eventos por categorias
+- Organização por categorias
 - Imagem de capa por upload ou URL
 - Definição de data e local
 - Eventos gratuitos e pagos
-- Limite opcional de vagas para eventos gratuitos
+- Limite de vagas para eventos gratuitos
 - Preço para eventos pagos
 - Link externo para compra de ingressos
-- Cupom ou benefício opcional
+- Cupom ou benefício opcional para eventos pagos
+- Definição da quantidade de vagas disponibilizadas com o cupom ou benefício
 - Validação das informações cadastradas
-- Bloqueio de eventos com datas passadas
+- Bloqueio de criação de eventos com datas passadas
 
-### 🎫 Inscrições
+### 🎫 Inscrições e ingressos
+
+Nos eventos gratuitos, a inscrição é realizada diretamente pelo EventHub. Nos eventos pagos, a compra do ingresso permanece sob responsabilidade da plataforma externa indicada pelo organizador.
 
 - Inscrição em eventos gratuitos
 - Prevenção de inscrições duplicadas
 - Bloqueio de inscrição no próprio evento
-- Controle de vagas disponíveis
+- Controle das vagas restantes em eventos gratuitos
 - Visualização das próprias inscrições
 - Cancelamento de inscrições
 - Separação entre eventos futuros e histórico
+- Direcionamento para plataforma externa em eventos pagos
+- Divulgação de cupom ou benefício para eventos pagos
+- Informação da quantidade de vagas disponibilizadas com o cupom ou benefício
+
+> Nos eventos pagos, as vagas informadas no EventHub são referentes ao **cupom ou benefício disponibilizado pelo organizador**. Elas não representam a capacidade total do evento nem a quantidade de ingressos disponíveis na plataforma externa.
 
 ### 🔎 Exploração
 
@@ -81,7 +100,7 @@ O projeto foi desenvolvido em uma **atividade voltada à construção de portfó
 - Filtro por localização
 - Filtro por período
 - Filtro entre eventos gratuitos e pagos
-- Exibição de eventos disponíveis
+- Exibição de eventos futuros disponíveis
 
 ### ❤️ Favoritos e interesses
 
@@ -89,7 +108,7 @@ O projeto foi desenvolvido em uma **atividade voltada à construção de portfó
 - Área de eventos favoritados
 - Recurso **"Quero mais como este"**
 - Registro das categorias de interesse do usuário
-- Área para visualização dos interesses
+- Área para visualização e gerenciamento dos interesses
 
 ### ✨ Recomendações personalizadas
 
@@ -109,9 +128,10 @@ As recomendações consideram eventos futuros pertencentes às categorias de int
 - **bcryptjs** — hash de senhas
 - **express-session** — gerenciamento de sessões
 - **express-mysql-session** — persistência das sessões no MySQL
-- **express-validator** — validação dos dados
+- **express-validator** — validação dos dados recebidos
 - **Multer** — processamento dos uploads de imagens
 - **Cloudinary** — armazenamento das imagens de perfis e eventos
+- **Nodemailer** — envio de e-mails para recuperação de senha no ambiente local
 - **dotenv** — gerenciamento das variáveis de ambiente
 - **HTML5** — estrutura das páginas
 - **CSS3** — estilização e responsividade
@@ -140,6 +160,13 @@ eventhub-mvc/
 ├── database/
 │   ├── schema.sql
 │   └── seed.sql
+│
+├── docs/
+│   └── screenshots/
+│       ├── detalhes-evento.png
+│       ├── explorar-eventos.png
+│       ├── para-voce.png
+│       └── perfil.png
 │
 ├── middlewares/
 │   ├── authMiddleware.js
@@ -172,7 +199,9 @@ eventhub-mvc/
 ├── views/
 │   ├── auth/
 │   │   ├── cadastro.ejs
-│   │   └── login.ejs
+│   │   ├── esqueci-senha.ejs
+│   │   ├── login.ejs
+│   │   └── redefinir-senha.ejs
 │   │
 │   ├── eventos/
 │   │   ├── criar.ejs
@@ -219,7 +248,8 @@ eventhub-mvc/
 - **Middlewares:** autenticação e validação
 - **Config:** configuração da conexão com o banco
 - **Database:** scripts de criação e dados iniciais
-- **Public:** CSS, JavaScript e imagens estáticas
+- **Public:** CSS, JavaScript e imagens utilizadas pela aplicação
+- **Docs:** imagens utilizadas na documentação do projeto
 
 ---
 
@@ -246,6 +276,8 @@ Entre as principais relações e regras implementadas:
 - Um usuário não pode se inscrever no próprio evento
 - Usuários podem favoritar diferentes eventos
 - Usuários podem registrar diferentes categorias de interesse
+
+A configuração da conexão é realizada por variáveis de ambiente, permitindo utilizar uma instância MySQL local durante o desenvolvimento ou um serviço MySQL externo em produção sem alterar a lógica da aplicação.
 
 ---
 
@@ -282,13 +314,17 @@ DB_USER=root
 DB_PASSWORD=sua_senha
 DB_NAME=eventhub
 
-SESSION_SECRET=sua_chave_secreta
+SESSION_SECRET=troque_por_uma_chave_secreta_forte
+
+NODE_ENV=development
 
 CLOUDINARY_CLOUD_NAME=seu_cloud_name
 CLOUDINARY_API_KEY=sua_api_key
 CLOUDINARY_API_SECRET=seu_api_secret
 
-NODE_ENV=development
+EMAIL_USER=seu_email@gmail.com
+EMAIL_APP_PASSWORD=sua_senha_de_app
+APP_URL=http://localhost:3000
 ```
 
 > O arquivo `.env` contém informações sensíveis e não deve ser enviado ao repositório.
@@ -305,7 +341,7 @@ database/
 
 Para criar uma nova estrutura do banco, execute o `schema.sql`.
 
-O `seed.sql` pode ser utilizado para inserir os dados iniciais.
+O `seed.sql` pode ser utilizado para inserir os dados iniciais necessários à aplicação.
 
 > **Atenção:** o `schema.sql` é destinado à criação de uma nova estrutura e pode remover estruturas existentes. Não o execute sobre um banco com dados que precisam ser preservados.
 
@@ -339,8 +375,22 @@ Entre as medidas implementadas na aplicação estão:
 - Variáveis sensíveis mantidas fora do código-fonte
 - Configuração SSL para conexão com o banco em produção
 - Validação de formato e limite de tamanho dos uploads
+- Recuperação de senha com token aleatório de uso temporário
+- Armazenamento apenas do hash do token de recuperação no banco
+- Expiração e invalidação do token após a redefinição da senha
+- Resposta genérica na solicitação de recuperação para evitar exposição da existência de contas
 
 Os uploads de perfil e capa de eventos aceitam imagens **JPG, PNG e WEBP de até 5 MB**.
+
+### Recuperação de senha
+
+O fluxo de recuperação de senha foi implementado e validado no **ambiente local**, utilizando envio de e-mail e links temporários para redefinição da senha.
+
+Na versão hospedada no plano gratuito do **Render**, essa funcionalidade permanece **desabilitada em produção** devido às restrições do ambiente utilizado para conexões SMTP externas.
+
+Por esse motivo, o link **"Esqueceu sua senha?"** não é exibido em produção e as rotas relacionadas à recuperação são bloqueadas nesse ambiente.
+
+A funcionalidade permanece disponível e funcional durante a execução local da aplicação quando as variáveis de e-mail necessárias estão configuradas.
 
 ---
 
@@ -363,19 +413,21 @@ A responsividade utiliza breakpoints específicos para reorganização da interf
 
 ## ☁️ Deploy
 
-O EventHub possui deploy utilizando **Render**, com banco de dados **MySQL hospedado no Aiven** e armazenamento de imagens no **Cloudinary**.
+A aplicação possui configuração para deploy no **Render**, utiliza um serviço **MySQL externo** para persistência dos dados em produção e o **Cloudinary** para armazenamento das imagens enviadas pelos usuários.
 
-<!-- Atualizar o link e esta seção após o deploy da versão final -->
+**Aplicação:** https://eventhub-mvc-kbb8.onrender.com
 
-**Aplicação:** `link da versão final após o deploy`
+> A disponibilidade da versão online depende também da disponibilidade do serviço externo de banco de dados configurado no ambiente de produção.
 
 ---
 
 ## 🎯 Sobre o projeto
 
-O EventHub foi desenvolvido em uma **atividade voltada à criação de projetos para portfólio**, aplicando conceitos estudados em criação de sites em uma aplicação completa.
+O EventHub foi desenvolvido em uma **atividade voltada à criação de projetos para portfólio**, aplicando conceitos estudados em criação de sites em uma aplicação web completa.
 
-O projeto reúne autenticação, arquitetura MVC, persistência de dados, relacionamentos entre entidades, controle de acesso, filtros, recomendações, upload de arquivos e integração com serviços externos.
+O projeto reúne autenticação, arquitetura MVC, persistência de dados, relacionamentos entre entidades, controle de acesso, filtros, recomendações personalizadas, upload de arquivos, recuperação segura de senha e integração com serviços externos.
+
+Além da implementação das funcionalidades, o desenvolvimento envolveu decisões relacionadas à experiência do usuário, organização da arquitetura, segurança, tratamento de diferentes ambientes e preparação da aplicação para deploy.
 
 ---
 
