@@ -24,7 +24,9 @@
     <form action="/login" method="POST">
 
       <div class="form-group">
-        <label for="email">E-mail</label>
+        <label for="email">
+          E-mail
+        </label>
 
         <input
           type="email"
@@ -38,7 +40,9 @@
       </div>
 
       <div class="form-group">
-        <label for="senha">Senha</label>
+        <label for="senha">
+          Senha
+        </label>
 
         <input
           type="password"
@@ -50,11 +54,13 @@
           autocomplete="current-password"
         >
 
-        <div class="mt-1">
-          <a href="/esqueci-senha">
-            Esqueceu sua senha?
-          </a>
-        </div>
+        <% if (recuperacaoDisponivel) { %>
+          <div class="mt-1">
+            <a href="/esqueci-senha">
+              Esqueceu sua senha?
+            </a>
+          </div>
+        <% } %>
       </div>
 
       <button
@@ -68,7 +74,9 @@
 
     <p class="auth-footer">
       Ainda não possui uma conta?
-      <a href="/cadastro">Cadastre-se</a>
+      <a href="/cadastro">
+        Cadastre-se
+      </a>
     </p>
 
   </div>

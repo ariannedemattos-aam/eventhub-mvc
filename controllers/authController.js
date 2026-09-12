@@ -30,7 +30,9 @@ exports.exibirLogin = (req, res) => {
     erro: null,
     sucesso: req.query.redefinida
       ? 'Senha redefinida com sucesso. Você já pode entrar.'
-      : null
+      : null,
+    recuperacaoDisponivel:
+      process.env.NODE_ENV !== 'production'
   });
 };
 
@@ -97,7 +99,9 @@ exports.login = async (req, res, next) => {
       return res.status(400).render('auth/login', {
         titulo: 'Entrar',
         erro: erros.array()[0].msg,
-        sucesso: null
+        sucesso: null,
+        recuperacaoDisponivel:
+          process.env.NODE_ENV !== 'production'
       });
     }
 
@@ -110,7 +114,9 @@ exports.login = async (req, res, next) => {
       return res.status(401).render('auth/login', {
         titulo: 'Entrar',
         erro: 'E-mail ou senha inválidos.',
-        sucesso: null
+        sucesso: null,
+        recuperacaoDisponivel:
+          process.env.NODE_ENV !== 'production'
       });
     }
 
@@ -123,7 +129,9 @@ exports.login = async (req, res, next) => {
       return res.status(401).render('auth/login', {
         titulo: 'Entrar',
         erro: 'E-mail ou senha inválidos.',
-        sucesso: null
+        sucesso: null,
+        recuperacaoDisponivel:
+          process.env.NODE_ENV !== 'production'
       });
     }
 
@@ -154,26 +162,30 @@ exports.exibirEsqueciSenha = (req, res) => {
   });
 };
 
-exports.solicitarRecuperacao = async (req, res, next) => {
+exports.solicitarRecuperacao = async (
+  req,
+  res,
+  next
+) => {
   try {
     const email = (req.body.email || '')
       .trim()
       .toLowerCase();
 
     if (!email) {
-      return res.status(400).render('auth/esqueci-senha', {
-        titulo: 'Recuperar senha',
-        erro: 'Informe seu e-mail.',
-        sucesso: null
-      });
+      return res.status(400).render(
+        'auth/esqueci-senha',
+        {
+          titulo: 'Recuperar senha',
+          erro: 'Informe seu e-mail.',
+          sucesso: null
+        }
+      );
     }
 
-    const usuario = await Usuario.buscarPorEmail(email);
+    const usuario =
+      await Usuario.buscarPorEmail(email);
 
-    /*
-      A resposta é a mesma mesmo quando o e-mail não existe.
-      Isso evita revelar quais endereços possuem conta no EventHub.
-    */
     const mensagemSucesso =
       'Se existir uma conta com este e-mail, você receberá um link para redefinir sua senha.';
 
@@ -185,8 +197,11 @@ exports.solicitarRecuperacao = async (req, res, next) => {
       });
     }
 
-    const token = crypto.randomBytes(32).toString('hex');
-    const tokenHash = gerarHashToken(token);
+    const token =
+      crypto.randomBytes(32).toString('hex');
+
+    const tokenHash =
+      gerarHashToken(token);
 
     const expiracao = new Date(
       Date.now() + 30 * 60 * 1000
@@ -199,17 +214,24 @@ exports.solicitarRecuperacao = async (req, res, next) => {
     );
 
     const appUrl =
-      process.env.APP_URL || 'http://localhost:3000';
+      process.env.APP_URL ||
+      'http://localhost:3000';
 
     const linkRecuperacao =
       `${appUrl}/redefinir-senha/${token}`;
 
-    const transportador = criarTransportadorEmail();
+    const transportador =
+      criarTransportadorEmail();
 
     await transportador.sendMail({
-      from: `"EventHub" <${process.env.EMAIL_USER}>`,
+      from:
+        `"EventHub" <${process.env.EMAIL_USER}>`,
+
       to: usuario.email,
-      subject: 'Redefinição de senha - EventHub',
+
+      subject:
+        'Redefinição de senha - EventHub',
+
       text: `
 Olá, ${usuario.nome}!
 
@@ -225,11 +247,17 @@ Se você não solicitou a redefinição, ignore este e-mail.
 
 EventHub
       `.trim(),
+
       html: `
         <div style="font-family: Arial, Helvetica, sans-serif; max-width: 600px; margin: 0 auto; color: #241f2e;">
-          <h2 style="color: #4c1d95;">EventHub 💜</h2>
+          <h2 style="color: #4c1d95;">
+            EventHub 💜
+          </h2>
 
-          <p>Olá, <strong>${usuario.nome}</strong>!</p>
+          <p>
+            Olá,
+            <strong>${usuario.nome}</strong>!
+          </p>
 
           <p>
             Recebemos uma solicitação para redefinir a senha
@@ -254,7 +282,8 @@ EventHub
           </p>
 
           <p>
-            Este link é válido por <strong>30 minutos</strong>.
+            Este link é válido por
+            <strong>30 minutos</strong>.
           </p>
 
           <p>
@@ -288,10 +317,14 @@ exports.exibirRedefinirSenha = async (
 ) => {
   try {
     const { token } = req.params;
-    const tokenHash = gerarHashToken(token);
+
+    const tokenHash =
+      gerarHashToken(token);
 
     const usuario =
-      await Usuario.buscarPorTokenRecuperacao(tokenHash);
+      await Usuario.buscarPorTokenRecuperacao(
+        tokenHash
+      );
 
     if (!usuario) {
       return res.status(400).render(
@@ -306,22 +339,31 @@ exports.exibirRedefinirSenha = async (
       );
     }
 
-    return res.render('auth/redefinir-senha', {
-      titulo: 'Redefinir senha',
-      token,
-      erro: null,
-      sucesso: null
-    });
+    return res.render(
+      'auth/redefinir-senha',
+      {
+        titulo: 'Redefinir senha',
+        token,
+        erro: null,
+        sucesso: null
+      }
+    );
   } catch (error) {
     next(error);
   }
 };
 
-exports.redefinirSenha = async (req, res, next) => {
+exports.redefinirSenha = async (
+  req,
+  res,
+  next
+) => {
   try {
     const { token } = req.params;
 
-    const senha = req.body.senha || '';
+    const senha =
+      req.body.senha || '';
+
     const confirmarSenha =
       req.body.confirmarSenha || '';
 
@@ -331,7 +373,8 @@ exports.redefinirSenha = async (req, res, next) => {
         {
           titulo: 'Redefinir senha',
           token,
-          erro: 'A nova senha deve ter pelo menos 6 caracteres.',
+          erro:
+            'A nova senha deve ter pelo menos 6 caracteres.',
           sucesso: null
         }
       );
@@ -343,16 +386,20 @@ exports.redefinirSenha = async (req, res, next) => {
         {
           titulo: 'Redefinir senha',
           token,
-          erro: 'As senhas informadas não coincidem.',
+          erro:
+            'As senhas informadas não coincidem.',
           sucesso: null
         }
       );
     }
 
-    const tokenHash = gerarHashToken(token);
+    const tokenHash =
+      gerarHashToken(token);
 
     const usuario =
-      await Usuario.buscarPorTokenRecuperacao(tokenHash);
+      await Usuario.buscarPorTokenRecuperacao(
+        tokenHash
+      );
 
     if (!usuario) {
       return res.status(400).render(
@@ -367,14 +414,17 @@ exports.redefinirSenha = async (req, res, next) => {
       );
     }
 
-    const senhaHash = await bcrypt.hash(senha, 12);
+    const senhaHash =
+      await bcrypt.hash(senha, 12);
 
     await Usuario.redefinirSenha(
       usuario.id,
       senhaHash
     );
 
-    return res.redirect('/login?redefinida=1');
+    return res.redirect(
+      '/login?redefinida=1'
+    );
   } catch (error) {
     next(error);
   }
@@ -389,7 +439,8 @@ exports.logout = (req, res, next) => {
     res.clearCookie('eventhub.sid', {
       httpOnly: true,
       sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production'
+      secure:
+        process.env.NODE_ENV === 'production'
     });
 
     return res.redirect('/login');
