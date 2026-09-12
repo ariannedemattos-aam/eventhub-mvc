@@ -2,10 +2,7 @@
 
 <section class="page-header">
   <h1>Editar evento</h1>
-
-  <p>
-    Atualize as informações publicadas no EventHub.
-  </p>
+  <p>Atualize as informações publicadas no EventHub.</p>
 </section>
 
 <div class="form-container">
@@ -24,7 +21,6 @@
   >
     <div class="form-group">
       <label for="titulo">Título</label>
-
       <input
         type="text"
         id="titulo"
@@ -39,7 +35,6 @@
 
     <div class="form-group">
       <label for="descricao">Descrição</label>
-
       <textarea
         id="descricao"
         name="descricao"
@@ -53,7 +48,6 @@
     <div class="form-grid">
       <div class="form-group">
         <label for="data">Data</label>
-
         <input
           type="date"
           id="data"
@@ -65,20 +59,13 @@
       </div>
 
       <div class="form-group">
-        <label for="categoria_id">
-          Categoria
-        </label>
-
+        <label for="categoria_id">Categoria</label>
         <select
           id="categoria_id"
           name="categoria_id"
           class="form-control"
           required
         >
-          <option value="">
-            Selecione uma categoria
-          </option>
-
           <% categorias.forEach((categoria) => { %>
             <option
               value="<%= categoria.id %>"
@@ -94,7 +81,6 @@
 
       <div class="form-group form-group-full">
         <label for="local">Local</label>
-
         <input
           type="text"
           id="local"
@@ -110,7 +96,6 @@
         <label for="imagem">
           Nova imagem de capa do dispositivo
         </label>
-
         <input
           type="file"
           id="imagem"
@@ -118,38 +103,25 @@
           class="form-control"
           accept="image/jpeg,image/png,image/webp"
         >
-
-        <small class="form-help">
-          JPG, PNG ou WEBP. Tamanho máximo: 5 MB.
-          Deixe vazio para continuar usando a imagem atual.
-        </small>
       </div>
 
       <div class="form-group form-group-full">
         <label for="imagem_url">
           Ou use uma URL de imagem
         </label>
-
         <input
           type="url"
           id="imagem_url"
           name="imagem_url"
           class="form-control"
-          placeholder="https://exemplo.com/imagem.jpg"
           value="<%= evento.imagem_url || '' %>"
         >
-
-        <small class="form-help">
-          Se escolher uma imagem do dispositivo,
-          ela terá prioridade sobre esta URL.
-        </small>
       </div>
 
-      <div class="form-group form-group-full">
+      <div class="form-group">
         <label for="tipo_ingresso">
           Tipo de ingresso
         </label>
-
         <select
           id="tipo_ingresso"
           name="tipo_ingresso"
@@ -176,33 +148,27 @@
         </select>
       </div>
 
-      <div
-        class="form-group form-group-full campo-condicional"
-        data-ingresso="gratuito"
-      >
-        <label for="vagas">
-          Quantidade de vagas
-        </label>
-
+      <div class="form-group">
+        <label for="vagas">Vagas</label>
         <input
           type="number"
           id="vagas"
           name="vagas"
           class="form-control"
           min="1"
-          placeholder="Deixe vazio para não limitar"
+          placeholder="Opcional"
           value="<%= evento.vagas || '' %>"
         >
+        <small class="form-help">
+          Deixe vazio caso não queira informar um limite de vagas.
+        </small>
       </div>
 
       <div
         class="form-group campo-condicional"
         data-ingresso="pago"
       >
-        <label for="preco">
-          Preço
-        </label>
-
+        <label for="preco">Preço</label>
         <input
           type="number"
           id="preco"
@@ -224,7 +190,6 @@
         <label for="cupom">
           Cupom ou benefício
         </label>
-
         <input
           type="text"
           id="cupom"
@@ -232,6 +197,7 @@
           class="form-control"
           maxlength="50"
           value="<%= evento.cupom || '' %>"
+          placeholder="Opcional"
         >
       </div>
 
@@ -242,12 +208,12 @@
         <label for="link_ingresso">
           Link para compra
         </label>
-
         <input
           type="url"
           id="link_ingresso"
           name="link_ingresso"
           class="form-control"
+          maxlength="1000"
           value="<%= evento.link_ingresso || '' %>"
         >
       </div>

@@ -84,7 +84,7 @@ const normalizarDadosEvento = (
         : null,
 
     vagas:
-      tipoIngresso === 'gratuito' && dados.vagas
+      dados.vagas
         ? Number(dados.vagas)
         : null
   };

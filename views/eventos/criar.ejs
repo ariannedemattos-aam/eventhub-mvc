@@ -23,7 +23,6 @@
   >
     <div class="form-group">
       <label for="titulo">Título</label>
-
       <input
         type="text"
         id="titulo"
@@ -38,7 +37,6 @@
 
     <div class="form-group">
       <label for="descricao">Descrição</label>
-
       <textarea
         id="descricao"
         name="descricao"
@@ -47,16 +45,11 @@
         maxlength="2000"
         required
       ><%= dados && dados.descricao ? dados.descricao : '' %></textarea>
-
-      <small class="form-help">
-        Conte o que as pessoas podem esperar do evento.
-      </small>
     </div>
 
     <div class="form-grid">
       <div class="form-group">
         <label for="data">Data</label>
-
         <input
           type="date"
           id="data"
@@ -69,16 +62,13 @@
 
       <div class="form-group">
         <label for="categoria_id">Categoria</label>
-
         <select
           id="categoria_id"
           name="categoria_id"
           class="form-control"
           required
         >
-          <option value="">
-            Selecione uma categoria
-          </option>
+          <option value="">Selecione uma categoria</option>
 
           <% categorias.forEach((categoria) => { %>
             <option
@@ -96,13 +86,11 @@
 
       <div class="form-group form-group-full">
         <label for="local">Local</label>
-
         <input
           type="text"
           id="local"
           name="local"
           class="form-control"
-          placeholder="Ex.: Centro de Eventos, Gramado - RS"
           value="<%= dados && dados.local ? dados.local : '' %>"
           maxlength="150"
           required
@@ -113,7 +101,6 @@
         <label for="imagem">
           Imagem de capa do dispositivo
         </label>
-
         <input
           type="file"
           id="imagem"
@@ -121,7 +108,6 @@
           class="form-control"
           accept="image/jpeg,image/png,image/webp"
         >
-
         <small class="form-help">
           JPG, PNG ou WEBP. Tamanho máximo: 5 MB.
         </small>
@@ -131,27 +117,20 @@
         <label for="imagem_url">
           Ou use uma URL de imagem
         </label>
-
         <input
           type="url"
           id="imagem_url"
           name="imagem_url"
           class="form-control"
-          placeholder="https://exemplo.com/imagem.jpg"
           value="<%= dados && dados.imagem_url ? dados.imagem_url : '' %>"
+          placeholder="https://exemplo.com/imagem.jpg"
         >
-
-        <small class="form-help">
-          Opcional. Se escolher uma imagem do dispositivo,
-          ela terá prioridade sobre esta URL.
-        </small>
       </div>
 
-      <div class="form-group form-group-full">
+      <div class="form-group">
         <label for="tipo_ingresso">
           Tipo de ingresso
         </label>
-
         <select
           id="tipo_ingresso"
           name="tipo_ingresso"
@@ -181,26 +160,19 @@
         </select>
       </div>
 
-      <div
-        class="form-group form-group-full campo-condicional"
-        data-ingresso="gratuito"
-      >
-        <label for="vagas">
-          Quantidade de vagas
-        </label>
-
+      <div class="form-group">
+        <label for="vagas">Vagas</label>
         <input
           type="number"
           id="vagas"
           name="vagas"
           class="form-control"
           min="1"
-          placeholder="Deixe vazio para não limitar"
+          placeholder="Opcional"
           value="<%= dados && dados.vagas ? dados.vagas : '' %>"
         >
-
         <small class="form-help">
-          Se ficar vazio, o evento não terá limite de inscrições.
+          Deixe vazio caso não queira informar um limite de vagas.
         </small>
       </div>
 
@@ -208,10 +180,7 @@
         class="form-group campo-condicional"
         data-ingresso="pago"
       >
-        <label for="preco">
-          Preço
-        </label>
-
+        <label for="preco">Preço</label>
         <input
           type="number"
           id="preco"
@@ -219,7 +188,6 @@
           class="form-control"
           min="0"
           step="0.01"
-          placeholder="0,00"
           value="<%= dados && dados.preco ? dados.preco : '' %>"
         >
       </div>
@@ -231,7 +199,6 @@
         <label for="cupom">
           Cupom ou benefício
         </label>
-
         <input
           type="text"
           id="cupom"
@@ -250,18 +217,18 @@
         <label for="link_ingresso">
           Link para compra
         </label>
-
         <input
           type="url"
           id="link_ingresso"
           name="link_ingresso"
           class="form-control"
-          placeholder="https://..."
+          maxlength="1000"
           value="<%= dados && dados.link_ingresso ? dados.link_ingresso : '' %>"
+          placeholder="https://..."
         >
-
         <small class="form-help">
-          A venda acontece externamente. O EventHub não processa pagamentos.
+          A compra acontece em uma plataforma externa.
+          O EventHub não processa pagamentos.
         </small>
       </div>
     </div>

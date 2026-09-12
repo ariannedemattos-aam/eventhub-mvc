@@ -108,6 +108,7 @@
       <div class="details-item">
         <strong>Inscrições:</strong>
         <%= evento.total_inscritos %>
+
         <% if (evento.vagas !== null) { %>
           de <%= evento.vagas %>
         <% } %>
@@ -132,11 +133,22 @@
           }
         ) %>
       </div>
+
+      <% if (
+        evento.vagas !== null &&
+        evento.vagas !== undefined
+      ) { %>
+        <div class="details-item">
+          <strong>Vagas:</strong>
+          <%= evento.vagas %>
+        </div>
+      <% } %>
     <% } %>
   </div>
 
   <div class="evento-descricao">
     <h2>Sobre o evento</h2>
+
     <p class="mt-1">
       <%= evento.descricao %>
     </p>

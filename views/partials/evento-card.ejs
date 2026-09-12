@@ -75,6 +75,7 @@
       <% if (evento.organizador_nome) { %>
         <span>
           👤
+
           <% if (evento.organizador_id) { %>
             <a
               href="/usuarios/<%= evento.organizador_id %>"
@@ -102,6 +103,18 @@
               currency: 'BRL'
             }
           ) %>
+        </span>
+      <% } %>
+
+      <% if (
+        evento.tipo_ingresso === 'pago' &&
+        evento.vagas !== null &&
+        evento.vagas !== undefined
+      ) { %>
+        <span>
+          👥
+          <%= evento.vagas %>
+          vaga<%= Number(evento.vagas) === 1 ? '' : 's' %>
         </span>
       <% } %>
 

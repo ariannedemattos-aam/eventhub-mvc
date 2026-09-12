@@ -103,9 +103,7 @@ exports.validarEvento = [
   body('data')
     .notEmpty()
     .withMessage('Informe a data do evento.')
-    .isISO8601({
-      strict: true
-    })
+    .isISO8601({ strict: true })
     .withMessage('Informe uma data válida.')
     .custom((valor) => {
       const dataEvento = new Date(`${valor}T00:00:00`);
@@ -168,10 +166,7 @@ exports.validarEvento = [
 
       const preco = Number(valor);
 
-      if (
-        !Number.isFinite(preco) ||
-        preco < 0
-      ) {
+      if (!Number.isFinite(preco) || preco < 0) {
         throw new Error('Informe um preço válido.');
       }
 
@@ -190,8 +185,16 @@ exports.validarEvento = [
         );
       }
 
+      const link = String(valor).trim();
+
+      if (link.length > 1000) {
+        throw new Error(
+          'O link do ingresso deve ter no máximo 1000 caracteres.'
+        );
+      }
+
       try {
-        const url = new URL(String(valor).trim());
+        const url = new URL(link);
 
         if (!['http:', 'https:'].includes(url.protocol)) {
           throw new Error();
@@ -209,35 +212,16 @@ exports.validarEvento = [
     .optional({ checkFalsy: true })
     .trim()
     .isLength({ max: 50 })
-    .withMessage('O cupom deve ter no máximo 50 caracteres.'),
+    .withMessage(
+      'O cupom ou benefício deve ter no máximo 50 caracteres.'
+    ),
 
   body('vagas')
-    .custom((valor, { req }) => {
-      if (req.body.tipo_ingresso !== 'gratuito') {
-        return true;
-      }
-
-      if (
-        valor === undefined ||
-        valor === null ||
-        String(valor).trim() === ''
-      ) {
-        return true;
-      }
-
-      const vagas = Number(valor);
-
-      if (
-        !Number.isInteger(vagas) ||
-        vagas < 1
-      ) {
-        throw new Error(
-          'O número de vagas deve ser maior que zero.'
-        );
-      }
-
-      return true;
-    })
+    .optional({ checkFalsy: true })
+    .isInt({ min: 1 })
+    .withMessage(
+      'O número de vagas deve ser maior que zero.'
+    )
 ];
 
 exports.validarId = [

@@ -53,14 +53,14 @@ CREATE TABLE eventos (
     categoria_id INT NOT NULL,
     organizador_id INT NOT NULL,
 
-    imagem_url VARCHAR(500) NULL,
+    imagem_url VARCHAR(1000) NULL,
 
     tipo_ingresso ENUM('gratuito', 'pago')
         NOT NULL
         DEFAULT 'gratuito',
 
     preco DECIMAL(10,2) NULL,
-    link_ingresso VARCHAR(500) NULL,
+    link_ingresso VARCHAR(1000) NULL,
     cupom VARCHAR(50) NULL,
     vagas INT NULL,
 
